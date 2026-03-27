@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "YouTube Thumbnail Downloader";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4"><i class="bi bi-youtube text-danger"></i> YouTube Thumbnail Downloader</h2>
+                    <p class="text-center text-muted">Paste any YouTube video link below to get the High-Quality thumbnail.</p>
+                    
+                    <form method="post">
+                        <div class="input-group mb-3">
+                            <input type="text" name="videoUrl" class="form-control form-control-lg" placeholder="https://www.youtube.com/watch?v=..." required />
+                            <button class="btn btn-danger px-4" type="submit">Get Thumbnail</button>
+                        </div>
+                    </form>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-warning mt-3">@ViewBag.Error</div>
+                    }
+
+                    @if (ViewBag.ThumbnailUrl != null)
+                    {
+                        <div class="mt-5 text-center">
+                            <h4 class="mb-3">Preview:</h4>
+                            <img src="@ViewBag.ThumbnailUrl" class="img-fluid rounded shadow-sm mb-3" style="max-height: 400px;" alt="Thumbnail Preview" />
+                            <br />
+                            <a href="@ViewBag.ThumbnailUrl" target="_blank" class="btn btn-success btn-lg">
+                                <i class="bi bi-download"></i> Download HQ Image
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

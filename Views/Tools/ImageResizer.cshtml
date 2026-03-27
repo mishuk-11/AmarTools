@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Image Resizer Tool";
+}
+
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4"><i class="bi bi-aspect-ratio text-primary"></i> Image Resizer</h2>
+            
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Select Image</label>
+                    <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Width (px)</label>
+                        <input type="number" name="width" class="form-control" value="800" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Height (px)</label>
+                        <input type="number" name="height" class="form-control" value="600" required />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Resize & Preview</button>
+            </form>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+            }
+
+            @if (ViewBag.ResizedImage != null)
+            {
+                <div class="mt-5 text-center">
+                    <h4>Preview Resized Image:</h4>
+                    <img src="@ViewBag.ResizedImage" class="img-fluid rounded shadow-sm border mb-3" />
+                    <br />
+                    <a href="@ViewBag.ResizedImage" download="resized-image.png" class="btn btn-success btn-lg">
+                        <i class="bi bi-download"></i> Download Resized Image
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

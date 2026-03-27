@@ -96,3 +96,15 @@ G:\CODE PROJECT\AmarTools\AmarTools\obj\Debug\net10.0\refint\AmarTools.dll
 G:\CODE PROJECT\AmarTools\AmarTools\obj\Debug\net10.0\AmarTools.pdb
 G:\CODE PROJECT\AmarTools\AmarTools\obj\Debug\net10.0\AmarTools.genruntimeconfig.cache
 G:\CODE PROJECT\AmarTools\AmarTools\obj\Debug\net10.0\ref\AmarTools.dll
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\rpswa.dswa.cache.json
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.GeneratedMSBuildEditorConfig.editorconfig
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.AssemblyInfoInputs.cache
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.AssemblyInfo.cs
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.csproj.CoreCompileInputs.cache
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.MvcApplicationPartsAssemblyInfo.cache
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.RazorAssemblyInfo.cache
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.RazorAssemblyInfo.cs
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.sourcelink.json
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.dll
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\refint\AmarTools.dll
+G:\CODE PROJECT\AmarTools\obj\Debug\net10.0\AmarTools.pdb

@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 400px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div class="card-body p-4">
+            <h3 class="text-center mb-4">Welcome Back</h3>
+            <form method="post" asp-action="Login">
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="name@example.com" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter password" required />
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Sign In</button>
+            </form>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+            }
+            <p class="mt-4 text-center">Don't have an account? <a href="/Auth/Register" class="text-decoration-none">Register</a></p>
+        </div>
+    </div>
+</div>
