@@ -1,0 +1,41 @@
+@model List<string>
+@{
+    Layout = "_AdminLayout"; 
+    ViewData["Title"] = "Installed Tools";
+}
+
+<div class="container-fluid py-4">
+    <h3 class="h3 mb-4 text-gray-800 font-weight-bold">Installed Plugins & Tools</h3>
+    
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var tool in Model)
+            {
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@tool</div>
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mt-1">
+                                        Plugin Active
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-plug fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info shadow">No tools found in the ./Tools directory.</div>
+            </div>
+        }
+    </div>
+</div>

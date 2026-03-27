@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmarTools")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+00da328a93f669826f287f18ed8b8bdfde963f45")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+638a4c383943c42d41540f812813e2a356051dee")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmarTools")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmarTools")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
