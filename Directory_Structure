@@ -1,0 +1,109 @@
+AmarTools.sln
+│
+├── src
+│   |
+│   ├── AmarTools.Web
+│   │   ├── Program.cs
+│   │   ├── DependencyInjection.cs
+│   │   ├── appsettings.json
+│   │   |
+│   │   ├── Controllers
+│   │   │   ├── AuthController.cs
+│   │   │   ├── HomeController.cs
+│   │   │   └── ApiControllerBase.cs
+│   │   │
+│   │   ├── Middleware
+│   │   │   ├── TenantMiddleware.cs
+│   │   │   └── ApiKeyMiddleware.cs
+│   │   │
+│   │   ├── Views
+│   │   │   ├── Shared
+│   │   │   │   ├── _Layout.cshtml
+│   │   │   │   ├── _ValidationScriptsPartial.cshtml
+│   │   │   │   └── Error.cshtml
+│   │   │   │
+│   │   │   └── Home
+│   │   │       └── Index.cshtml
+│   │   │
+│   │   └── wwwroot
+│   │       ├── css
+│   │       ├── js
+│   │       ├── images
+│   │       └── lib
+│   |
+│   |
+│   ├── AmarTools.BuildingBlocks
+│   │
+│   │   ├── Common
+│   │   │   ├── Result.cs
+│   │   │   ├── Error.cs
+│   │   │   ├── Guard.cs
+│   │   │   └── Pagination.cs
+│   │   │
+│   │   ├── Domain
+│   │   │   ├── BaseEntity.cs
+│   │   │   ├── AuditableEntity.cs
+│   │   │   └── ValueObjects
+│   │   │       └── Money.cs
+│   │   │
+│   │   ├── Interfaces
+│   │   │   ├── ICurrentUserService.cs
+│   │   │   ├── ITenantResolver.cs
+│   │   │   └── IDateTimeService.cs
+│   │   │
+│   │   └── Security
+│   │       ├── Roles.cs
+│   │       └── Permission.cs
+│   |
+│   |
+│   ├── AmarTools.Infrastructure
+│   │   |
+│   │   ├── Persistence
+│   │   │   ├── AppDbContext.cs
+│   │   │   ├── DbInitializer.cs
+│   │   │   ├── Migrations
+│   │   │   └── Configurations
+│   │   │
+│   │   ├── Identity
+│   │   │   ├── ApplicationUser.cs
+│   │   │   ├── IdentityService.cs
+│   │   │   └── IdentitySeeder.cs
+│   │   │
+│   │   ├── MultiTenancy
+│   │   │   ├── Tenant.cs
+│   │   │   ├── TenantResolver.cs
+│   │   │   └── TenantMiddleware.cs
+│   │   │
+│   │   ├── ApiKeys
+│   │   │   └── ApiKeyService.cs
+│   │   │
+│   │   ├── Services
+│   │   │   ├── EmailService.cs
+│   │   │   ├── FileStorageService.cs
+│   │   │   └── BackgroundJobService.cs
+│   │   │
+│   │   ├── External
+│   │   │   ├── PdfGenerationService.cs
+│   │   │   └── ImageService.cs
+│   │   │
+│   │   └── Printing
+│   │       └── ChequePrintService.cs
+│   |
+│   |
+│   ├── Modules
+│   │   |
+│   │   ├── Dashboard
+│   │   ├── BannerGenerator
+│   │   ├── Voting
+│   │   ├── CertificateGenerator
+│   │   ├── GuestCheckIn
+│   │   └── ChequePrinting
+│
+│
+├── tests
+│   ├── UnitTests
+│   ├── IntegrationTests
+│   └── E2E
+│
+├── docker-compose.yml
+└── README.md
