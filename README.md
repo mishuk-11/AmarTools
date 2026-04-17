@@ -68,5 +68,4 @@ dotnet run
 
 This project uses PostgreSQL with EF Core migrations.
 
-To apply migrations, run `Update-Database` in the Package Manager Console.
 
