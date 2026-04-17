@@ -1,0 +1,204 @@
+@{
+    ViewData["Title"] = "My Events";
+    ViewData["ActivePage"] = "events";
+    Layout = "~/Views/Shared/Tools_Layout.cshtml";
+}
+<script>Auth.guard('User');</script>
+
+<style>
+  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .page-title  { font-size:20px; font-weight:800; color:#3e256c; }
+
+  .btn { padding:9px 18px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:opacity .15s; }
+  .btn:hover { opacity:.88; }
+  .btn-primary { background:linear-gradient(135deg,#3e256c,#6252a3); color:#fff; }
+  .btn-danger  { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+  .btn-ghost   { background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+  .btn-sm { padding:5px 12px; font-size:12px; }
+
+  .table-wrap { background:#fff; border:1px solid #ede8f5; border-radius:14px; overflow:hidden; margin-bottom:28px; }
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .data-table th { background:#f8f5ff; color:#6b7280; font-weight:700; padding:11px 16px; text-align:left; border-bottom:1px solid #ede8f5; text-transform:uppercase; font-size:11px; letter-spacing:.4px; }
+  .data-table td { padding:13px 16px; border-bottom:1px solid #f3f4f6; color:#374151; vertical-align:middle; }
+  .data-table tr:last-child td { border-bottom:none; }
+  .data-table tr:hover td { background:#fafafa; }
+
+  .badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; }
+  .badge-active   { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
+  .badge-archived { background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+  .badge-closed   { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+
+  .empty-state { padding:48px 24px; text-align:center; color:#9ca3af; font-size:13px; }
+  .empty-icon  { width:48px; height:48px; background:#f3f4f6; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; color:#d1d5db; }
+
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:500; align-items:center; justify-content:center; }
+  .modal-bg.open { display:flex; }
+  .modal { background:#fff; border-radius:16px; padding:28px 28px 24px; width:100%; max-width:460px; box-shadow:0 20px 60px rgba(62,37,108,.18); }
+  .modal-title { font-size:17px; font-weight:800; color:#3e256c; margin-bottom:20px; }
+  .form-group { margin-bottom:14px; }
+  .form-label { display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+  .form-input { width:100%; padding:10px 13px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:13px; background:#fafafa; box-sizing:border-box; }
+  .form-input:focus { outline:none; border-color:#6252a3; box-shadow:0 0 0 3px rgba(98,82,163,.1); background:#fff; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+</style>
+
+<div class="page-header">
+  <h1 class="page-title">My Events</h1>
+  <button class="btn btn-primary" onclick="openCreate()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Event
+  </button>
+</div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Name</th><th>Status</th><th>Date</th><th>Venue</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="eventsBody">
+      <tr><td colspan="5"><div class="empty-state">Loading…</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Create / Edit Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">New Event</div>
+    <input type="hidden" id="editId" />
+    <div class="form-group">
+      <label class="form-label">Event Name *</label>
+      <input id="fName" class="form-input" placeholder="e.g. Annual Tech Summit 2025" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <input id="fDesc" class="form-input" placeholder="Optional description" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Event Date</label>
+      <input id="fDate" class="form-input" type="date" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Venue</label>
+      <input id="fVenue" class="form-input" placeholder="Location or online link" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+Auth.guard('User');
+const token = Auth.getToken();
+const H = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+function esc(s){ return String(s??'—').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+// Escapes a value for safe embedding inside a single-quoted JS string inside an HTML attribute
+function attr(s){ return String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' '); }
+
+async function loadEvents() {
+  const tbody = document.getElementById('eventsBody');
+  try {
+    const r = await fetch('/api/events', { headers: H });
+    if (r.status===401){ Auth.logout(); return; }
+    const data = await r.json();
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+        <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        No events yet. Click "New Event" to create one.
+      </div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map(e => {
+      const sc = e.status===1?'active':e.status===2?'archived':'closed';
+      const sl = e.status===1?'Active':e.status===2?'Archived':'Closed';
+      const editBtn = e.status !== 3
+        ? `<button class="btn btn-ghost btn-sm" onclick="openEdit('${e.id}','${attr(e.name)}','${attr(e.description||'')}','${attr(e.eventDate||'')}','${attr(e.venue||'')}')">Edit</button>`
+        : '';
+      const actions = e.status===1
+        ? `${editBtn}<button class="btn btn-ghost btn-sm" onclick="archiveEvent('${e.id}')">Archive</button>
+           <button class="btn btn-danger btn-sm" onclick="closeEvent('${e.id}')">Close</button>`
+        : e.status===2
+        ? `${editBtn}<button class="btn btn-primary btn-sm" onclick="reactivateEvent('${e.id}')">Reactivate</button>
+           <button class="btn btn-danger btn-sm" onclick="closeEvent('${e.id}')">Close</button>`
+        : `<span style="color:#9ca3af;font-size:12px;">Closed</span>`;
+      return `<tr id="ev-${e.id}">
+        <td><strong>${esc(e.name)}</strong>${e.description?`<br><span style="font-size:11px;color:#9ca3af;">${esc(e.description)}</span>`:''}
+        </td>
+        <td><span class="badge badge-${sc}">${sl}</span></td>
+        <td>${fmtDate(e.eventDate)}</td>
+        <td>${esc(e.venue)}</td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
+      </tr>`;
+    }).join('');
+  } catch {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">Failed to load events.</div></td></tr>`;
+  }
+}
+
+function openCreate() {
+  document.getElementById('editId').value='';
+  document.getElementById('fName').value='';
+  document.getElementById('fDesc').value='';
+  document.getElementById('fDate').value='';
+  document.getElementById('fVenue').value='';
+  document.getElementById('modalTitle').textContent='New Event';
+  document.getElementById('saveBtn').textContent='Create';
+  document.getElementById('modal').classList.add('open');
+}
+function openEdit(id, name, desc, date, venue) {
+  document.getElementById('editId').value = id;
+  document.getElementById('fName').value  = name;
+  document.getElementById('fDesc').value  = desc;
+  document.getElementById('fDate').value  = date ? date.split('T')[0] : '';
+  document.getElementById('fVenue').value = venue;
+  document.getElementById('modalTitle').textContent = 'Edit Event';
+  document.getElementById('saveBtn').textContent    = 'Save Changes';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+async function saveEvent() {
+  const id   = document.getElementById('editId').value;
+  const name = document.getElementById('fName').value.trim();
+  if (!name) { alert('Event name is required.'); return; }
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  const payload = {
+    name,
+    description: document.getElementById('fDesc').value.trim()||null,
+    eventDate:   document.getElementById('fDate').value||null,
+    venue:       document.getElementById('fVenue').value.trim()||null
+  };
+  try {
+    const isEdit = !!id;
+    const r = await fetch(isEdit ? `/api/events/${id}` : '/api/events', {
+      method: isEdit ? 'PATCH' : 'POST', headers: H,
+      body: JSON.stringify(payload)
+    });
+    if (r.ok||r.status===201) { closeModal(); loadEvents(); }
+    else { const e=await r.json().catch(()=>{}); alert(e?.detail||`Failed to ${isEdit?'update':'create'} event.`); }
+  } catch { alert('Network error.'); }
+  finally { btn.disabled=false; }
+}
+
+async function archiveEvent(id) {
+  if (!confirm('Archive this event?')) return;
+  const r = await fetch(`/api/events/${id}/archive`,{method:'PATCH',headers:H});
+  if (r.ok||r.status===204) loadEvents(); else alert('Failed to archive.');
+}
+async function reactivateEvent(id) {
+  const r = await fetch(`/api/events/${id}/reactivate`,{method:'PATCH',headers:H});
+  if (r.ok) loadEvents(); else { const e=await r.json().catch(()=>{}); alert(e?.detail||'Failed to reactivate.'); }
+}
+async function closeEvent(id) {
+  if (!confirm('Permanently close this event? This cannot be undone.')) return;
+  const r = await fetch(`/api/events/${id}/close`,{method:'PATCH',headers:H});
+  if (r.ok||r.status===204) loadEvents(); else alert('Failed to close.');
+}
+
+loadEvents();
+</script>

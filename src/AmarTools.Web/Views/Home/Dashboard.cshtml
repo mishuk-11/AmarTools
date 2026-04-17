@@ -1,0 +1,212 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ActivePage"] = "dashboard";
+    Layout = "~/Views/Shared/Tools_Layout.cshtml";
+}
+
+<style>
+  .dash-header { margin-bottom: 28px; }
+  .dash-header h1 { font-size: 22px; font-weight: 800; color: #3e256c; margin-bottom: 6px; }
+  .dash-header p  { font-size: 14px; color: #6b7280; display:flex; align-items:center; gap:8px; }
+
+  .role-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px; font-size: 11px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+  }
+  .role-owner { background: #ede8f5; color: #6252a3; border: 1px solid #d7b4d5; }
+  .role-coord { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+
+  .section-title {
+    font-size: 15px; font-weight: 700; color: #3e256c;
+    margin: 28px 0 14px; display:flex; align-items:center; gap:8px;
+  }
+  .section-title:first-of-type { margin-top: 0; }
+
+  .table-wrap {
+    background: #fff; border: 1px solid #ede8f5;
+    border-radius: 14px; overflow: hidden; margin-bottom: 32px;
+  }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    background: #f8f5ff; color: #6b7280; font-weight: 700;
+    padding: 11px 16px; text-align: left; border-bottom: 1px solid #ede8f5;
+    text-transform: uppercase; font-size: 11px; letter-spacing: .4px;
+  }
+  .data-table td {
+    padding: 13px 16px; border-bottom: 1px solid #f3f4f6;
+    color: #374151; vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #fafafa; }
+
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 9px;
+    border-radius: 20px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .badge-active   { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .badge-archived { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+  .badge-closed   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+  .empty-state {
+    padding: 40px 24px; text-align: center; color: #9ca3af; font-size: 13px;
+  }
+  .empty-icon {
+    width: 44px; height: 44px; background: #f3f4f6; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px; color: #d1d5db;
+  }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 14px; margin-bottom: 32px;
+  }
+  .module-card {
+    background: #fff; border: 1px solid #ede8f5;
+    border-radius: 12px; padding: 18px 16px;
+    text-decoration: none; display: flex; align-items: center;
+    gap: 12px; transition: box-shadow .15s, transform .15s; color: inherit;
+  }
+  .module-card:hover {
+    box-shadow: 0 6px 24px rgba(62,37,108,.1);
+    transform: translateY(-2px);
+  }
+  .module-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #3e256c, #6252a3);
+    border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; color: #fff; flex-shrink: 0;
+  }
+  .module-name { font-size: 14px; font-weight: 600; color: #1f1635; }
+  .module-desc { font-size: 12px; color: #6b7280; margin-top: 2px; }
+</style>
+
+<script>Auth.guard('User');</script>
+
+<div class="dash-header">
+  <h1 id="welcomeMsg">Welcome back</h1>
+  <p>You're signed in as <span id="roleBadge"></span></p>
+</div>
+
+<p class="section-title">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  My Events
+</p>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Event Name</th><th>Status</th><th>Date</th><th>Venue</th><th>Tools</th></tr>
+    </thead>
+    <tbody id="eventsBody">
+      <tr><td colspan="5"><div class="empty-state">Loading…</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="section-title">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  Modules
+</p>
+<div class="module-grid">
+  <a class="module-card" href="/tools/photo-frame">
+    <div class="module-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
+    </div>
+    <div>
+      <div class="module-name">Photo Frame</div>
+      <div class="module-desc">Guest kiosk overlays</div>
+    </div>
+  </a>
+  <a class="module-card" href="/tools/certificates">
+    <div class="module-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    </div>
+    <div>
+      <div class="module-name">Certificates</div>
+      <div class="module-desc">Bulk generation</div>
+    </div>
+  </a>
+  <a class="module-card" href="/tools/contacts">
+    <div class="module-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    </div>
+    <div>
+      <div class="module-name">Contacts</div>
+      <div class="module-desc">Attendee directory</div>
+    </div>
+  </a>
+</div>
+
+<script>
+const token = Auth.getToken();
+const H     = { 'Authorization': `Bearer ${token}` };
+
+(function() {
+  var u    = Auth.getUser();
+  var name = u.fullName || 'there';
+  document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + name + ' \uD83D\uDC4B';
+
+  var role    = Auth.getRole();
+  var badgeEl = document.getElementById('roleBadge');
+  if (role === 'Owner') {
+    badgeEl.innerHTML = '<span class="role-badge role-owner">Owner</span>';
+  } else if (role === 'Coordinator') {
+    badgeEl.innerHTML = '<span class="role-badge role-coord">Coordinator</span>';
+  }
+})();
+
+async function loadDashboard() {
+  try {
+    const r = await fetch('/api/events/dashboard', { headers: H });
+    if (r.status === 401) { Auth.logout(); return; }
+    if (!r.ok) return;
+    const d = await r.json();
+    renderEvents([...(d.activeEvents || []), ...(d.archivedEvents || [])]);
+  } catch {
+    renderEvents([]);
+  }
+}
+
+function renderEvents(events) {
+  const tbody = document.getElementById('eventsBody');
+  if (!events.length) {
+    tbody.innerHTML = `<tr><td colspan="5">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        No events yet — <a href="/tools/events" style="color:#6252a3;">create your first event</a>
+      </div>
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = events.map(e => {
+    const statusClass = e.status === 1 ? 'active' : e.status === 2 ? 'archived' : 'closed';
+    const statusLabel = e.status === 1 ? 'Active'  : e.status === 2 ? 'Archived'  : 'Closed';
+    const tools = (e.activeTools || []).map(t =>
+      `<span style="font-size:10px;background:#ede8f5;color:#6252a3;padding:2px 7px;border-radius:10px;margin-right:4px;">${esc(t.toolName || t.toolType)}</span>`
+    ).join('') || '<span style="color:#9ca3af;font-size:12px;">—</span>';
+    return `<tr>
+      <td><strong>${esc(e.name)}</strong>${e.description ? `<br><span style="font-size:11px;color:#9ca3af;">${esc(e.description)}</span>` : ''}</td>
+      <td><span class="badge badge-${statusClass}">${statusLabel}</span></td>
+      <td>${e.eventDate ? fmtDate(e.eventDate) : '—'}</td>
+      <td>${esc(e.venue)}</td>
+      <td>${tools}</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s ?? '—').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+loadDashboard();
+</script>

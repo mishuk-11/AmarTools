@@ -1,0 +1,6 @@
+@{
+    // Default layout for all views.
+    // Admin pages explicitly override this with Admin_Layout.cshtml in their own @{ Layout = ... }
+    // Server-side User.IsInRole() cannot be used here because auth is JWT/localStorage-based.
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}

@@ -1,0 +1,183 @@
+@{
+    ViewData["Title"] = "Contacts";
+    ViewData["ActivePage"] = "contacts";
+    Layout = "~/Views/Shared/Tools_Layout.cshtml";
+}
+<script>Auth.guard('User');</script>
+
+<style>
+  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .page-title  { font-size:20px; font-weight:800; color:#3e256c; }
+  .btn { padding:9px 18px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:opacity .15s; }
+  .btn:hover { opacity:.88; }
+  .btn-primary { background:linear-gradient(135deg,#3e256c,#6252a3); color:#fff; }
+  .btn-danger  { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+  .btn-ghost   { background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+  .btn-sm { padding:5px 12px; font-size:12px; }
+  .search-bar { display:flex; gap:10px; margin-bottom:16px; }
+  .search-input { flex:1; padding:9px 13px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:13px; background:#fff; }
+  .search-input:focus { outline:none; border-color:#6252a3; }
+  .table-wrap { background:#fff; border:1px solid #ede8f5; border-radius:14px; overflow:hidden; }
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .data-table th { background:#f8f5ff; color:#6b7280; font-weight:700; padding:11px 16px; text-align:left; border-bottom:1px solid #ede8f5; text-transform:uppercase; font-size:11px; letter-spacing:.4px; }
+  .data-table td { padding:12px 16px; border-bottom:1px solid #f3f4f6; color:#374151; vertical-align:middle; }
+  .data-table tr:last-child td { border-bottom:none; }
+  .data-table tr:hover td { background:#fafafa; }
+  .empty-state { padding:48px 24px; text-align:center; color:#9ca3af; font-size:13px; }
+  .empty-icon  { width:48px; height:48px; background:#f3f4f6; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; color:#d1d5db; }
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:500; align-items:center; justify-content:center; }
+  .modal-bg.open { display:flex; }
+  .modal { background:#fff; border-radius:16px; padding:28px 28px 24px; width:100%; max-width:440px; box-shadow:0 20px 60px rgba(62,37,108,.18); }
+  .modal-title { font-size:17px; font-weight:800; color:#3e256c; margin-bottom:20px; }
+  .form-group { margin-bottom:14px; }
+  .form-label { display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+  .form-input { width:100%; padding:10px 13px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:13px; background:#fafafa; box-sizing:border-box; }
+  .form-input:focus { outline:none; border-color:#6252a3; box-shadow:0 0 0 3px rgba(98,82,163,.1); background:#fff; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+</style>
+
+<div class="page-header">
+  <h1 class="page-title">Contacts</h1>
+  <button class="btn btn-primary" onclick="openAdd()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Contact
+  </button>
+</div>
+
+<div class="search-bar">
+  <input class="search-input" id="searchInput" placeholder="Search by name or email…" oninput="filterContacts()" />
+</div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Notes</th><th>Actions</th></tr></thead>
+    <tbody id="contactsBody">
+      <tr><td colspan="5"><div class="empty-state">Loading…</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add / Edit Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add Contact</div>
+    <input type="hidden" id="editId" />
+    <div class="form-group"><label class="form-label">Name *</label><input id="fName" class="form-input" placeholder="Full name" /></div>
+    <div class="form-group"><label class="form-label">Email *</label><input id="fEmail" class="form-input" type="email" placeholder="email@example.com" /></div>
+    <div class="form-group"><label class="form-label">Phone</label><input id="fPhone" class="form-input" placeholder="+20 xxx xxx xxxx" /></div>
+    <div class="form-group"><label class="form-label">Notes</label><input id="fNotes" class="form-input" placeholder="Optional notes" /></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveContact()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+Auth.guard('User');
+const token = Auth.getToken();
+const H = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+let allContacts = [];
+
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function loadContacts() {
+  const tbody = document.getElementById('contactsBody');
+  try {
+    const r = await fetch('/api/contacts', { headers: H });
+    if (r.status===401){ Auth.logout(); return; }
+    if (!r.ok) {
+      const err = await r.json().catch(()=>({}));
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">Failed to load contacts: ${esc(err.detail||r.statusText)}</div></td></tr>`;
+      return;
+    }
+    allContacts = await r.json();
+    renderContacts(allContacts);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">Failed to load contacts.</div></td></tr>`;
+  }
+}
+
+function renderContacts(data) {
+  const tbody = document.getElementById('contactsBody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+      <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      No contacts yet. Click "Add Contact" to create one.
+    </div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(c => `
+    <tr id="c-${c.id}">
+      <td><div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:30px;height:30px;background:linear-gradient(135deg,#6252a3,#d7b4d5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0;">${esc((c.displayName||c.name||'?').charAt(0).toUpperCase())}</div>
+        <strong>${esc(c.displayName||c.name)}</strong>
+      </div></td>
+      <td>${esc(c.displayEmail||c.email)}</td>
+      <td>${esc(c.phone||c.contactPhone||'')}</td>
+      <td>${esc(c.notes||'')}</td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-ghost btn-sm" onclick='openEdit(${JSON.stringify(c)})'>Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteContact('${c.id}')">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterContacts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  renderContacts(allContacts.filter(c => {
+    const name  = (c.displayName||c.name||'').toLowerCase();
+    const email = (c.displayEmail||c.email||'').toLowerCase();
+    return name.includes(q) || email.includes(q);
+  }));
+}
+
+function openAdd() {
+  document.getElementById('editId').value='';
+  document.getElementById('fName').value='';
+  document.getElementById('fEmail').value='';
+  document.getElementById('fPhone').value='';
+  document.getElementById('fNotes').value='';
+  document.getElementById('modalTitle').textContent='Add Contact';
+  document.getElementById('saveBtn').textContent='Add';
+  document.getElementById('modal').classList.add('open');
+}
+function openEdit(c) {
+  document.getElementById('editId').value = c.id;
+  document.getElementById('fName').value  = c.displayName||c.name||'';
+  document.getElementById('fEmail').value = c.displayEmail||c.email||'';
+  document.getElementById('fPhone').value = c.phone||c.contactPhone||'';
+  document.getElementById('fNotes').value = c.notes||'';
+  document.getElementById('modalTitle').textContent='Edit Contact';
+  document.getElementById('saveBtn').textContent='Save';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+
+async function saveContact() {
+  const id   = document.getElementById('editId').value;
+  const name = document.getElementById('fName').value.trim();
+  const email= document.getElementById('fEmail').value.trim();
+  if (!name||!email){ alert('Name and email are required.'); return; }
+  const btn  = document.getElementById('saveBtn');
+  btn.disabled = true;
+  const body = { name, email, phone: document.getElementById('fPhone').value.trim()||null, notes: document.getElementById('fNotes').value.trim()||null };
+  try {
+    const r = id
+      ? await fetch(`/api/contacts/${id}`,{method:'PATCH',headers:H,body:JSON.stringify(body)})
+      : await fetch('/api/contacts/plain',{method:'POST',headers:H,body:JSON.stringify(body)});
+    if (r.ok||r.status===201){ closeModal(); loadContacts(); }
+    else { const e=await r.json().catch(()=>{}); alert(e?.detail||'Failed to save.'); }
+  } catch { alert('Network error.'); }
+  finally { btn.disabled=false; }
+}
+
+async function deleteContact(id) {
+  if (!confirm('Delete this contact?')) return;
+  const r = await fetch(`/api/contacts/${id}`,{method:'DELETE',headers:H});
+  if (r.ok||r.status===204) loadContacts();
+  else { const e=await r.json().catch(()=>{}); alert(e?.detail||'Failed to delete.'); }
+}
+
+loadContacts();
+</script>

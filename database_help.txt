@@ -1,0 +1,276 @@
+================================================================================
+  AmarTools — Database Setup & Deployment Guide
+  LogicThree Platform | ASP.NET Core 8 + PostgreSQL 15+
+================================================================================
+
+This file walks through every step needed to get the database running on a
+fresh machine, from installing prerequisites to applying the first migration.
+
+────────────────────────────────────────────────────────────────────────────────
+1. PREREQUISITES
+────────────────────────────────────────────────────────────────────────────────
+
+a) .NET 8 SDK
+   Download: https://dotnet.microsoft.com/download/dotnet/8.0
+   Verify:
+       dotnet --version        (should print 8.x.x)
+
+b) PostgreSQL 15 or newer
+   Download: https://www.postgresql.org/download/
+   - During setup choose a superuser password (you'll use it below)
+   - Default port: 5432 — leave it unless you have a conflict
+   - Windows: the installer adds psql to PATH automatically
+   - Linux/macOS: install via apt/brew, then start the service:
+       sudo systemctl start postgresql    (Linux)
+       brew services start postgresql     (macOS)
+
+c) dotnet-ef local tool (already configured in this repo)
+   The repo ships a .config/dotnet-tools.json that pins dotnet-ef 8.x.
+   Run once from the repository root to restore it:
+       dotnet tool restore
+   Verify:
+       dotnet dotnet-ef --version         (should print 8.x.x)
+
+────────────────────────────────────────────────────────────────────────────────
+2. CREATE THE DATABASE AND USER IN POSTGRESQL
+────────────────────────────────────────────────────────────────────────────────
+
+Open a terminal (psql or pgAdmin) logged in as the postgres superuser:
+
+    -- Create a dedicated application user (replace "StrongPassw0rd!" below)
+    CREATE USER amartools_user WITH PASSWORD 'StrongPassw0rd!';
+
+    -- Create the database and assign ownership to the app user
+    CREATE DATABASE amartools OWNER amartools_user;
+
+    -- Grant all privileges (needed for EF schema creation)
+    GRANT ALL PRIVILEGES ON DATABASE amartools TO amartools_user;
+
+Quick one-liner using psql from the command line:
+
+    psql -U postgres -c "CREATE USER amartools_user WITH PASSWORD 'StrongPassw0rd!';"
+    psql -U postgres -c "CREATE DATABASE amartools OWNER amartools_user;"
+    psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE amartools TO amartools_user;"
+
+    NOTE: Replace 'StrongPassw0rd!' with a real password and record it securely.
+          Never commit real passwords to source control.
+
+────────────────────────────────────────────────────────────────────────────────
+3. CONFIGURE THE CONNECTION STRING
+────────────────────────────────────────────────────────────────────────────────
+
+Edit  src/AmarTools.Web/appsettings.Development.json  (for local development):
+
+    {
+      "ConnectionStrings": {
+        "DefaultConnection": "Host=localhost;Port=5432;Database=amartools;Username=amartools_user;Password=StrongPassw0rd!"
+      },
+      ...
+    }
+
+For production, set the connection string via an environment variable instead
+of appsettings.json (keeps secrets out of source control):
+
+    Windows PowerShell:
+        $env:ConnectionStrings__DefaultConnection = "Host=...;Database=amartools;..."
+
+    Linux / macOS bash:
+        export ConnectionStrings__DefaultConnection="Host=...;Database=amartools;..."
+
+    Docker / docker-compose:
+        environment:
+          - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=amartools;...
+
+Connection string parameters reference:
+    Host        — PostgreSQL server hostname or IP (use "localhost" locally)
+    Port        — Default 5432
+    Database    — "amartools" (or the name you chose above)
+    Username    — "amartools_user" (or "postgres" for dev convenience)
+    Password    — the password you set in step 2
+
+────────────────────────────────────────────────────────────────────────────────
+4. CONFIGURE THE JWT SECRET KEY
+────────────────────────────────────────────────────────────────────────────────
+
+The JWT key must be at least 32 characters.
+
+Development (appsettings.Development.json):
+
+    {
+      "Jwt": {
+        "Key": "your-secret-key-at-least-32-chars-long!!",
+        "Issuer": "AmarTools",
+        "Audience": "AmarTools.Clients",
+        "ExpiryMinutes": 1440
+      }
+    }
+
+Production — generate a cryptographically random key:
+
+    PowerShell:
+        [Convert]::ToBase64String((1..32 | ForEach-Object { [byte](Get-Random -Max 256) }))
+
+    bash / openssl:
+        openssl rand -base64 32
+
+    Then set via environment variable:
+        $env:Jwt__Key = "<generated-key>"   (PowerShell)
+        export Jwt__Key="<generated-key>"   (bash)
+
+────────────────────────────────────────────────────────────────────────────────
+5. APPLY DATABASE MIGRATIONS
+────────────────────────────────────────────────────────────────────────────────
+
+From the repository root directory run:
+
+    dotnet dotnet-ef database update \
+        --project src/AmarTools.Infrastructure \
+        --startup-project src/AmarTools.Infrastructure
+
+This command will:
+  • Connect to the PostgreSQL database defined in the connection string
+  • Create all tables, indexes, and foreign-key constraints
+  • Insert the __EFMigrationsHistory record for the InitialCreate migration
+
+If the connection string is NOT in appsettings.json yet, pass it inline:
+
+    dotnet dotnet-ef database update \
+        --project src/AmarTools.Infrastructure \
+        --startup-project src/AmarTools.Infrastructure \
+        -- --connectionstring "Host=localhost;Database=amartools;Username=...;Password=..."
+
+Verify the migration applied:
+
+    psql -U amartools_user -d amartools -c "\dt"
+    -- Should list ~25 tables: events, event_tools, identity_users, etc.
+
+────────────────────────────────────────────────────────────────────────────────
+6. CREATE THE UPLOADS FOLDER
+────────────────────────────────────────────────────────────────────────────────
+
+The application stores uploaded files (frame images, certificates, datasets)
+under  src/AmarTools.Web/wwwroot/uploads/.
+This directory must exist before the app starts:
+
+    mkdir -p src/AmarTools.Web/wwwroot/uploads
+
+On Windows (PowerShell):
+    New-Item -ItemType Directory -Force -Path "src\AmarTools.Web\wwwroot\uploads"
+
+For production deployments make sure the process user has write permission
+to the uploads folder (or configure cloud storage — see section 9).
+
+────────────────────────────────────────────────────────────────────────────────
+7. RUN THE APPLICATION (DEVELOPMENT)
+────────────────────────────────────────────────────────────────────────────────
+
+    cd src/AmarTools.Web
+    dotnet run
+
+The API will be available at:
+    https://localhost:7000     (HTTPS — recommended)
+    http://localhost:5000      (HTTP)
+
+Swagger UI:
+    https://localhost:7000/swagger
+
+To trust the dev HTTPS certificate (first time only):
+    dotnet dev-certs https --trust
+
+────────────────────────────────────────────────────────────────────────────────
+8. COMPLETE SETUP CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+[ ] .NET 8 SDK installed and `dotnet --version` returns 8.x.x
+[ ] PostgreSQL 15+ installed and service is running
+[ ] Database "amartools" created with a dedicated user
+[ ] Connection string set in appsettings.Development.json (or environment var)
+[ ] JWT Key set (≥32 chars) in appsettings.Development.json (or env var)
+[ ] `dotnet tool restore` run from repo root (installs dotnet-ef 8.x)
+[ ] `dotnet dotnet-ef database update ...` run — no errors
+[ ] `\dt` in psql shows ~25 tables
+[ ] `mkdir -p src/AmarTools.Web/wwwroot/uploads` done
+[ ] `dotnet run` in src/AmarTools.Web starts without errors
+[ ] https://localhost:7000/swagger opens in browser
+
+────────────────────────────────────────────────────────────────────────────────
+9. PRODUCTION DEPLOYMENT NOTES
+────────────────────────────────────────────────────────────────────────────────
+
+a) Publish the application:
+       dotnet publish src/AmarTools.Web -c Release -o ./publish
+
+b) Secrets — NEVER store production secrets in appsettings.json.
+   Use one of:
+   • Environment variables  (ConnectionStrings__DefaultConnection, Jwt__Key, etc.)
+   • Azure Key Vault        (Microsoft.Extensions.Configuration.AzureKeyVault)
+   • AWS Secrets Manager
+   • HashiCorp Vault
+
+c) HTTPS in production:
+   Place the app behind a reverse proxy (nginx / Caddy / IIS) that handles TLS.
+   Or configure Kestrel with a real certificate in appsettings.Production.json:
+       "Kestrel": {
+         "Endpoints": {
+           "Https": {
+             "Url": "https://*:443",
+             "Certificate": { "Path": "/certs/cert.pfx", "Password": "..." }
+           }
+         }
+       }
+
+d) Static file uploads in production:
+   The default LocalFileStorageService writes files to wwwroot/uploads/.
+   For multi-server or serverless deployments switch to cloud storage:
+   • Register your own IFileStorageService implementation (S3, Azure Blob, etc.)
+   • Swap the DI registration in src/AmarTools.Infrastructure/DependencyInjection.cs
+
+e) Run migrations on deployment (CI/CD):
+       dotnet dotnet-ef database update \
+           --project src/AmarTools.Infrastructure \
+           --startup-project src/AmarTools.Infrastructure \
+           --no-build
+   Or run them programmatically on app startup via:
+       await context.Database.MigrateAsync();
+
+f) Applying a new migration after code changes:
+       dotnet dotnet-ef migrations add <MigrationName> \
+           --project src/AmarTools.Infrastructure \
+           --startup-project src/AmarTools.Infrastructure \
+           --output-dir Persistence/Migrations
+       dotnet dotnet-ef database update \
+           --project src/AmarTools.Infrastructure \
+           --startup-project src/AmarTools.Infrastructure
+
+────────────────────────────────────────────────────────────────────────────────
+10. TROUBLESHOOTING
+────────────────────────────────────────────────────────────────────────────────
+
+Problem: "28P01: password authentication failed for user"
+Fix:     Check the Password= value in the connection string matches what you
+         set in PostgreSQL. Passwords are case-sensitive.
+
+Problem: "3D000: database 'amartools' does not exist"
+Fix:     Run step 2 — CREATE DATABASE — again using psql as postgres superuser.
+
+Problem: "Unable to obtain lock on file ... AmarTools.Web (13372)"
+Fix:     Stop any running instance of the app (Ctrl+C in the terminal, or
+         stop the VS Code debugger) before running dotnet build or dotnet-ef.
+
+Problem: "No service for type 'ICurrentUserService'"
+Fix:     This should not happen in production. If it does, ensure
+         AddInfrastructure() is called in Program.cs before any module DI.
+
+Problem: dotnet-ef not found
+Fix:     Run `dotnet tool restore` from the repository root. The tool manifest
+         is at .config/dotnet-tools.json.
+
+Problem: "Npgsql.PostgresException: relation already exists"
+Fix:     The database already has tables. To start fresh:
+             psql -U amartools_user -d amartools -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+             dotnet dotnet-ef database update ...
+         WARNING: this deletes all data.
+
+================================================================================
+End of file
+================================================================================

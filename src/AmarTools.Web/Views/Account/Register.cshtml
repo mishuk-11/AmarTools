@@ -1,0 +1,249 @@
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+
+<style>
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+  .auth-card {
+    background: #fff;
+    border: 1px solid #ede8f5;
+    border-radius: 18px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 40px rgba(62,37,108,.08);
+  }
+  .auth-logo {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #3e256c, #6252a3);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 18px;
+    margin: 0 auto 20px;
+  }
+  .auth-title  { font-size: 22px; font-weight: 800; color: #3e256c; text-align: center; margin-bottom: 4px; }
+  .auth-sub    { font-size: 13px; color: #6b7280; text-align: center; margin-bottom: 28px; }
+
+  .form-group  { margin-bottom: 16px; }
+  .form-label  { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+  .form-input  {
+    width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb;
+    border-radius: 10px; font-size: 14px; color: #1f1635;
+    background: #fafafa; transition: border .15s, box-shadow .15s;
+    box-sizing: border-box;
+  }
+  .form-input:focus { outline: none; border-color: #6252a3; box-shadow: 0 0 0 3px rgba(98,82,163,.12); background: #fff; }
+
+  .package-group { margin-bottom: 20px; }
+  .package-label { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 10px; display: block; }
+  .package-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+
+  .package-opt input[type=radio] { display: none; }
+  .package-opt label {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 14px 10px; border: 2px solid #e5e7eb; border-radius: 12px;
+    cursor: pointer; transition: border .15s, background .15s;
+    background: #fafafa;
+  }
+  .package-opt label:hover { border-color: #6252a3; }
+  .package-opt input:checked + label {
+    border-color: #3e256c; background: #ede8f5;
+  }
+  .pkg-days   { font-size: 20px; font-weight: 800; color: #3e256c; }
+  .pkg-unit   { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+  .pkg-badge  {
+    margin-top: 6px; font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px; text-transform: uppercase; letter-spacing: .3px;
+  }
+  .pkg-7  { background: #f3f4f6; color: #374151; }
+  .pkg-30 { background: #ede8f5; color: #6252a3; }
+  .pkg-90 { background: #fdf4ff; color: #3e256c; }
+
+  .btn-submit {
+    width: 100%; padding: 13px; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #3e256c, #6252a3);
+    color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity .15s, transform .15s;
+    margin-top: 8px;
+  }
+  .btn-submit:hover  { opacity: .9; transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+  .auth-footer { text-align: center; font-size: 13px; color: #6b7280; margin-top: 22px; }
+  .auth-footer a { color: #6252a3; font-weight: 600; text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  .alert { padding: 11px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; display: none; }
+  .alert-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .pending-box {
+    text-align: center; padding: 32px 0 8px;
+  }
+  .pending-icon {
+    width: 64px; height: 64px;
+    background: #ede8f5; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; color: #3e256c;
+  }
+  .pending-title { font-size: 18px; font-weight: 800; color: #3e256c; margin-bottom: 8px; }
+  .pending-desc  { font-size: 13px; color: #6b7280; line-height: 1.6; }
+</style>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">AT</div>
+
+    <!-- Step 1: Fill form -->
+    <div class="step active" id="step1">
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Join AmarTools and run better events</p>
+
+      <div id="errorMsg" class="alert alert-error"></div>
+
+      <form id="registerForm" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label" for="fullName">Full name</label>
+          <input id="fullName" type="text" class="form-input" placeholder="Ahmed Mohamed" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input id="email" type="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" class="form-input" placeholder="At least 8 characters" required autocomplete="new-password" minlength="8" />
+        </div>
+
+        <div class="package-group">
+          <span class="package-label">Choose a subscription package</span>
+          <div class="package-options">
+            <div class="package-opt">
+              <input type="radio" name="package" id="pkg7" value="7" />
+              <label for="pkg7">
+                <span class="pkg-days">7</span>
+                <span class="pkg-unit">days</span>
+                <span class="pkg-badge pkg-7">Trial</span>
+              </label>
+            </div>
+            <div class="package-opt">
+              <input type="radio" name="package" id="pkg30" value="30" checked />
+              <label for="pkg30">
+                <span class="pkg-days">30</span>
+                <span class="pkg-unit">days</span>
+                <span class="pkg-badge pkg-30">Standard</span>
+              </label>
+            </div>
+            <div class="package-opt">
+              <input type="radio" name="package" id="pkg90" value="90" />
+              <label for="pkg90">
+                <span class="pkg-days">90</span>
+                <span class="pkg-unit">days</span>
+                <span class="pkg-badge pkg-90">Pro</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Create account</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="/login">Sign in</a>
+      </div>
+    </div>
+
+    <!-- Step 2: Pending approval -->
+    <div class="step" id="step2">
+      <div class="pending-box">
+        <div class="pending-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <p class="pending-title">Account created!</p>
+        <p class="pending-desc">
+          Your account is ready and your subscription request for
+          <strong id="chosenDays"></strong> has been submitted.<br/><br/>
+          An admin will review and approve it shortly.
+          You'll have full access to all tools once approved.
+        </p>
+        <a href="/login" style="display:inline-block;margin-top:24px;padding:11px 28px;background:linear-gradient(135deg,#3e256c,#6252a3);color:#fff;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;">
+          Go to sign in
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function handleRegister(e) {
+  e.preventDefault();
+  const btn     = document.getElementById('submitBtn');
+  const errorEl = document.getElementById('errorMsg');
+  errorEl.style.display = 'none';
+  btn.disabled  = true;
+  btn.textContent = 'Creating account…';
+
+  const packageDays = parseInt(document.querySelector('input[name="package"]:checked').value);
+
+  try {
+    // ── Step 1: Register ──────────────────────────────────────────────────────
+    const regRes = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: document.getElementById('fullName').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      })
+    });
+
+    const regData = await regRes.json();
+
+    if (!regRes.ok) {
+      errorEl.textContent = regData.detail || 'Registration failed. Please try again.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const token = regData.accessToken;
+    localStorage.setItem('at_token', token);
+    localStorage.setItem('at_user',  JSON.stringify(regData.user));
+    localStorage.setItem('at_exp',   regData.expiresAt);
+
+    // ── Step 2: Submit subscription request ───────────────────────────────────
+    await fetch('/api/subscriptionrequest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ packageDays })
+    });
+
+    // Show success step
+    document.getElementById('chosenDays').textContent = packageDays + ' days';
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+
+  } catch {
+    errorEl.textContent = 'Could not reach the server. Please try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create account';
+  }
+}
+</script>

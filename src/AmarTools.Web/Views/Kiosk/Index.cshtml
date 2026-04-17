@@ -1,0 +1,767 @@
+@model string
+@{
+    Layout = null;
+    var slug = Model ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title id="pageTitle">Photo Frame Kiosk · AmarTools</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #fff;
+      --surface: #16162a;
+      --card:    #1e1e38;
+      --border:  #2d2d55;
+      --accent:  #7c6bc4;
+      --accent2: #e0b8de;
+      --green:   #10b981;
+      --text:    #f0eeff;
+      --muted:   #8b8aaa;
+      --radius:  14px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      width: 100%;
+      background: linear-gradient(135deg, #1a1040 0%, #2d1b5e 50%, #1a2a50 100%);
+      border-bottom: 1px solid rgba(124,107,196,.25);
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header-inner {
+      width: 100%;
+      max-width: 860px;
+      padding: 20px 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .event-logo {
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      object-fit: contain;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      display: none;
+      flex-shrink: 0;
+    }
+    .header-text { flex: 1; min-width: 0; }
+    .event-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.4px;
+      margin-bottom: 4px;
+    }
+    .event-meta-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,.8);
+    }
+    .chip svg { flex-shrink: 0; }
+    .powered-by {
+      margin-left: auto;
+      font-size: 11px;
+      color: rgba(255,255,255,.4);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .powered-by span { color: var(--accent2); font-weight: 700; }
+
+    /* ── Steps strip ── */
+    .steps-strip {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      padding: 0 0 20px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: rgba(255,255,255,.45);
+      padding: 0 14px;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,.15);
+    }
+    .step-num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step.active { color: var(--accent2); }
+    .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── Main layout ── */
+    .main {
+      flex: 1;
+      width: 100%;
+      max-width: 860px;
+      padding: 28px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    /* ── Canvas area ── */
+    .canvas-wrap {
+      position: relative;
+      display: inline-block;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(124,107,196,.2);
+      cursor: grab;
+      touch-action: none;
+      background: #111;
+      max-width: 100%;
+    }
+    .canvas-wrap:active { cursor: grabbing; }
+    #frameCanvas {
+      display: block;
+      max-width: min(90vw, 520px);
+      max-height: min(70vh, 520px);
+      width: auto; height: auto;
+    }
+
+    /* ── Upload overlay ── */
+    .upload-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: linear-gradient(135deg, rgba(13,13,26,.75), rgba(45,27,94,.6));
+      backdrop-filter: blur(3px);
+      border-radius: var(--radius);
+      pointer-events: none;
+    }
+    .upload-overlay.hidden { display: none; }
+    .upload-btn-big {
+      padding: 15px 32px;
+      background: linear-gradient(135deg, #7c6bc4, #3e256c);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      pointer-events: all;
+      transition: transform .12s, box-shadow .12s;
+      box-shadow: 0 8px 32px rgba(124,107,196,.5);
+    }
+    .upload-btn-big:hover { transform: translateY(-2px); box-shadow: 0 14px 44px rgba(124,107,196,.65); }
+    .upload-overlay-hint { font-size: 12px; color: rgba(240,238,255,.55); pointer-events: none; text-align: center; max-width: 200px; }
+
+    /* ── Controls bar ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.35);
+    }
+    .ctrl-group { display: flex; align-items: center; gap: 8px; }
+    .ctrl-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .zoom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 110px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+    }
+    .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .zoom-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+    }
+    .ctrl-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+    .btn-ctrl {
+      padding: 8px 16px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn-ctrl:hover { opacity: .85; }
+    .btn-ctrl:active { transform: scale(.97); }
+    .btn-change { background: var(--border); color: var(--text); }
+    .btn-download { background: linear-gradient(135deg,#059669,#10b981); color: #fff; }
+    .btn-download:disabled { opacity: .35; cursor: not-allowed; transform: none !important; }
+
+    .drag-hint {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    /* ── Loading screen ── */
+    .state-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 55vh;
+      gap: 18px;
+      text-align: center;
+      padding: 24px;
+    }
+    .spinner-ring {
+      width: 48px; height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    .loading-text { font-size: 15px; color: var(--muted); }
+    @@keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error screen ── */
+    .error-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 55vh;
+      justify-content: center;
+      padding: 32px 24px;
+      gap: 0;
+      text-align: center;
+    }
+    .error-glow {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239,68,68,.18) 0%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .error-icon-svg { color: #ef4444; }
+    .error-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .error-body {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+    .error-card {
+      background: var(--card);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      max-width: 380px;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .error-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #ef4444;
+      margin-bottom: 10px;
+    }
+    .error-card-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      line-height: 1.45;
+    }
+    .error-card-item:last-child { margin-bottom: 0; }
+    .error-card-item svg { flex-shrink: 0; margin-top: 1px; color: #ef4444; }
+    .error-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.25);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #f87171;
+      font-weight: 600;
+    }
+    .brand-link {
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .brand-link a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+    .brand-link a:hover { text-decoration: underline; }
+
+    /* ── Mobile ── */
+    @@media (max-width: 600px) {
+      .event-name { font-size: 17px; }
+      .powered-by { display: none; }
+      .controls { padding: 12px 14px; gap: 10px; }
+      .zoom-slider { width: 80px; }
+      .steps-strip { display: none; }
+      .header-inner { padding: 16px 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header (hidden until data loaded) -->
+<header class="site-header" id="siteHeader" style="display:none;">
+  <div class="header-inner">
+    <img id="eventLogo" class="event-logo" alt="Event logo" />
+    <div class="header-text">
+      <div class="event-name" id="eventName">Photo Frame</div>
+      <div class="event-meta-chips" id="eventMetaChips"></div>
+    </div>
+    <div class="powered-by">Powered by <span>AmarTools</span></div>
+  </div>
+  <div class="steps-strip" id="stepsStrip">
+    <div class="step active" id="step1">
+      <div class="step-num">1</div>Upload photo
+    </div>
+    <div class="step" id="step2">
+      <div class="step-num">2</div>Position &amp; zoom
+    </div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>Download
+    </div>
+  </div>
+</header>
+
+<!-- Loading -->
+<div id="loadingScreen" class="main">
+  <div class="state-screen">
+    <div class="spinner-ring"></div>
+    <div class="loading-text">Loading your event frame…</div>
+  </div>
+</div>
+
+<!-- Error -->
+<div id="errorScreen" class="main" style="display:none;">
+  <div class="error-screen">
+    <div class="error-glow">
+      <svg class="error-icon-svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="error-title" id="errorTitle">Kiosk Unavailable</div>
+    <div class="error-body" id="errorBody">This photo frame event could not be loaded right now.</div>
+
+    <div class="error-card">
+      <div class="error-card-title">What might have happened</div>
+      <div class="error-card-item" id="errReason1">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        The event organiser has not published this kiosk yet
+      </div>
+      <div class="error-card-item" id="errReason2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        The link you followed may be outdated or incorrect
+      </div>
+      <div class="error-card-item" id="errReason3">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+        The frame image for this event has not been uploaded yet
+      </div>
+    </div>
+
+    <div class="error-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span id="errorSlug"></span>
+    </div>
+
+    <div class="brand-link">Contact the event organiser or visit <a href="/">AmarTools</a></div>
+  </div>
+</div>
+
+<!-- Main kiosk UI -->
+<div id="kioskMain" class="main" style="display:none;">
+
+  <div class="canvas-wrap" id="canvasWrap">
+    <canvas id="frameCanvas"></canvas>
+    <div class="upload-overlay" id="uploadOverlay">
+      <button class="upload-btn-big" onclick="triggerPhotoUpload()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        Upload Your Photo
+      </button>
+      <div class="upload-overlay-hint">Tap to upload · Frame will be applied automatically</div>
+    </div>
+  </div>
+
+  <div class="controls" id="controls">
+    <div class="ctrl-group">
+      <span class="ctrl-label">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>
+        Zoom
+      </span>
+      <input type="range" class="zoom-slider" id="zoomSlider" min="0.1" max="2" step="0.01" value="1" oninput="onZoomSlider()" />
+      <span id="zoomLabel" style="font-size:11px;font-weight:700;color:var(--accent2);min-width:36px;text-align:right;">100%</span>
+    </div>
+
+    <div class="ctrl-divider"></div>
+
+    <div class="drag-hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>
+      Drag to reposition
+    </div>
+
+    <div class="ctrl-divider"></div>
+
+    <button class="btn-ctrl btn-change" onclick="triggerPhotoUpload()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Change Photo
+    </button>
+
+    <button class="btn-ctrl btn-download" id="downloadBtn" onclick="downloadPhoto()" disabled>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download
+    </button>
+  </div>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="onPhotoSelected(this)" />
+
+<script>
+const SLUG = '@Html.Raw(slug)';
+
+let frameImg         = null;
+let guestImg         = null;
+let zoom             = 1;
+let eventNameForFile = 'photo';
+let photoX     = 0;
+let photoY     = 0;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+
+const canvas = document.getElementById('frameCanvas');
+const ctx    = canvas.getContext('2d');
+
+/* ── Boot ── */
+async function init() {
+  document.getElementById('errorSlug').textContent = SLUG;
+  try {
+    const r = await fetch(`/api/photo-frame/public/${SLUG}`);
+    if (!r.ok) {
+      let title = 'Kiosk Not Found';
+      let body  = 'This photo frame event could not be found or is not yet published.';
+      try {
+        const err = await r.json();
+        if (err.detail) body = err.detail;
+        if (r.status === 404) title = 'Event Not Found';
+        if (r.status >= 500) { title = 'Configuration Incomplete'; body = err.detail || body; }
+      } catch {}
+      showError(title, body);
+      return;
+    }
+    const d = await r.json();
+
+    /* ── Populate header ── */
+    eventNameForFile = d.eventName || 'photo';
+    document.getElementById('eventName').textContent = d.eventName || 'Photo Frame';
+    if (d.logoUrl) {
+      const logo = document.getElementById('eventLogo');
+      logo.src = d.logoUrl; logo.style.display = 'block';
+    }
+    const chips = document.getElementById('eventMetaChips');
+    if (d.venueName) {
+      chips.innerHTML += `<span class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.venueName)}</span>`;
+    }
+    if (d.eventDateTime) {
+      const dt = new Date(d.eventDateTime).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+      chips.innerHTML += `<span class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dt}</span>`;
+    }
+    if (d.sponsorName) {
+      chips.innerHTML += `<span class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Sponsored by ${esc(d.sponsorName)}</span>`;
+    }
+    document.getElementById('pageTitle').textContent = (d.eventName || 'Photo Frame') + ' · AmarTools';
+    document.getElementById('siteHeader').style.display = 'block';
+
+    /* ── Load frame image ── */
+    if (!d.frameImageUrl) {
+      showError('Frame Not Configured', 'The event organiser has not uploaded the photo frame image yet. Check back soon!');
+      return;
+    }
+    try {
+      frameImg = await loadImage(d.frameImageUrl);
+    } catch {
+      showError('Frame Image Unavailable', 'The frame image could not be loaded. Please refresh the page or contact the event organiser.');
+      return;
+    }
+
+    canvas.width  = frameImg.naturalWidth  || 800;
+    canvas.height = frameImg.naturalHeight || 800;
+    drawCanvas();
+
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('kioskMain').style.display     = 'flex';
+    setActiveStep(1);
+  } catch {
+    showError('Connection Error', 'Could not reach the server. Please check your internet connection and refresh the page.');
+  }
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showError(title, body) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('siteHeader').style.display    = 'none';
+  if (title) document.getElementById('errorTitle').textContent = title;
+  if (body)  document.getElementById('errorBody').textContent  = body;
+  document.getElementById('errorScreen').style.display = 'flex';
+}
+
+function setActiveStep(n) {
+  ['step1','step2','step3'].forEach((id,i) => {
+    document.getElementById(id).classList.toggle('active', i+1 === n);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload  = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+/* ── Canvas rendering ── */
+function drawCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (guestImg) {
+    ctx.drawImage(guestImg, photoX, photoY,
+      guestImg.naturalWidth * zoom, guestImg.naturalHeight * zoom);
+  }
+  if (frameImg) {
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+  }
+}
+
+/* ── Photo upload ── */
+function triggerPhotoUpload() {
+  document.getElementById('photoInput').click();
+}
+
+async function onPhotoSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  guestImg = await loadImage(url);
+
+  const scaleW = canvas.width  / guestImg.naturalWidth;
+  const scaleH = canvas.height / guestImg.naturalHeight;
+  zoom   = Math.max(scaleW, scaleH);
+  photoX = (canvas.width  - guestImg.naturalWidth  * zoom) / 2;
+  photoY = (canvas.height - guestImg.naturalHeight * zoom) / 2;
+
+  zoom = Math.min(zoom, 2);
+  document.getElementById('zoomSlider').value = zoom;
+  updateZoomLabel(zoom);
+  document.getElementById('uploadOverlay').classList.add('hidden');
+  document.getElementById('downloadBtn').disabled = false;
+  drawCanvas();
+  setActiveStep(2);
+  input.value = '';
+}
+
+/* ── Zoom ── */
+function updateZoomLabel(z) {
+  document.getElementById('zoomLabel').textContent = Math.round(z * 100) + '%';
+}
+
+function onZoomSlider() {
+  const newZoom = parseFloat(document.getElementById('zoomSlider').value);
+  const cx = canvas.width  / 2;
+  const cy = canvas.height / 2;
+  photoX = cx - (cx - photoX) * (newZoom / zoom);
+  photoY = cy - (cy - photoY) * (newZoom / zoom);
+  zoom = newZoom;
+  updateZoomLabel(zoom);
+  drawCanvas();
+}
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.93 : 1.07;
+  const rect  = canvas.getBoundingClientRect();
+  const sx = canvas.width  / rect.width;
+  const sy = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * sx;
+  const my = (e.clientY - rect.top)  * sy;
+  photoX = mx - (mx - photoX) * delta;
+  photoY = my - (my - photoY) * delta;
+  zoom  *= delta;
+  zoom   = Math.max(0.1, Math.min(2, zoom));
+  document.getElementById('zoomSlider').value = zoom;
+  updateZoomLabel(zoom);
+  drawCanvas();
+}, { passive: false });
+
+/* ── Mouse drag ── */
+canvas.addEventListener('mousedown', e => {
+  if (!guestImg) return;
+  isDragging = true;
+  const rect = canvas.getBoundingClientRect();
+  dragStartX = e.clientX - rect.left - (photoX * rect.width / canvas.width);
+  dragStartY = e.clientY - rect.top  - (photoY * rect.height / canvas.height);
+});
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const rect = canvas.getBoundingClientRect();
+  photoX = (e.clientX - rect.left - dragStartX) * (canvas.width  / rect.width);
+  photoY = (e.clientY - rect.top  - dragStartY) * (canvas.height / rect.height);
+  drawCanvas();
+});
+window.addEventListener('mouseup', () => isDragging = false);
+
+/* ── Touch drag + pinch zoom ── */
+let lastTouches = [];
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  lastTouches = Array.from(e.touches);
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!guestImg) return;
+  const touches = Array.from(e.touches);
+  const rect = canvas.getBoundingClientRect();
+  const sx = canvas.width  / rect.width;
+  const sy = canvas.height / rect.height;
+
+  if (touches.length === 1 && lastTouches.length === 1) {
+    photoX += (touches[0].clientX - lastTouches[0].clientX) * sx;
+    photoY += (touches[0].clientY - lastTouches[0].clientY) * sy;
+  } else if (touches.length === 2 && lastTouches.length >= 2) {
+    const prevDist = Math.hypot(
+      lastTouches[0].clientX - lastTouches[1].clientX,
+      lastTouches[0].clientY - lastTouches[1].clientY);
+    const currDist = Math.hypot(
+      touches[0].clientX - touches[1].clientX,
+      touches[0].clientY - touches[1].clientY);
+    if (prevDist > 0) {
+      const delta = currDist / prevDist;
+      const mx = ((touches[0].clientX + touches[1].clientX) / 2 - rect.left) * sx;
+      const my = ((touches[0].clientY + touches[1].clientY) / 2 - rect.top)  * sy;
+      photoX = mx - (mx - photoX) * delta;
+      photoY = my - (my - photoY) * delta;
+      zoom  *= delta;
+      zoom   = Math.max(0.1, Math.min(2, zoom));
+      document.getElementById('zoomSlider').value = zoom;
+      updateZoomLabel(zoom);
+    }
+  }
+  lastTouches = touches;
+  drawCanvas();
+}, { passive: false });
+
+canvas.addEventListener('touchend',    e => { lastTouches = Array.from(e.touches); });
+canvas.addEventListener('touchcancel', e => { lastTouches = []; });
+
+/* ── Download ── */
+function downloadPhoto() {
+  if (!guestImg) return;
+  setActiveStep(3);
+  const safeName = eventNameForFile.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || 'photo';
+  const ts       = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
+  canvas.toBlob(blob => {
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href     = url;
+    link.download = `${safeName}_${ts}.jpg`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }, 'image/jpeg', 0.92);
+}
+
+init();
+</script>
+</body>
+</html>

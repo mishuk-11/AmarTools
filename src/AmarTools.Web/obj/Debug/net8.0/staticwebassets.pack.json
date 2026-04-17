@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\js\\auth.js",
+      "PackagePath": "staticwebassets\\js\\auth.js"
+    },
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\4edf04d6e48940d1b1233ea458ac2697_template.png",
+      "PackagePath": "staticwebassets\\uploads\\frames\\4edf04d6e48940d1b1233ea458ac2697_template.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\6a78d00b05354a7d991aba4950fcc350_template.png",
+      "PackagePath": "staticwebassets\\uploads\\frames\\6a78d00b05354a7d991aba4950fcc350_template.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\65dcbe7193254283937899221dae7c5c_event_logo.png",
+      "PackagePath": "staticwebassets\\uploads\\logos\\65dcbe7193254283937899221dae7c5c_event_logo.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\b71cf68f9eaf457dae39a9531253f825_event_logo.png",
+      "PackagePath": "staticwebassets\\uploads\\logos\\b71cf68f9eaf457dae39a9531253f825_event_logo.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AmarTools.Web.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.AmarTools.Web.props",
+      "PackagePath": "build\\AmarTools.Web.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.AmarTools.Web.props",
+      "PackagePath": "buildMultiTargeting\\AmarTools.Web.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.AmarTools.Web.props",
+      "PackagePath": "buildTransitive\\AmarTools.Web.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

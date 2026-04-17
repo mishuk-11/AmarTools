@@ -1,0 +1,256 @@
+================================================================================
+  AmarTools — All Setup Commands Reference
+  ASP.NET Core 8 + PostgreSQL + EF Core Migrations
+================================================================================
+
+Run all commands from the REPOSITORY ROOT unless stated otherwise.
+Replace placeholder values (YOUR_PG_PASSWORD, YOUR_APP_PASSWORD, etc.) with real values.
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 0 — VERIFY PREREQUISITES
+────────────────────────────────────────────────────────────────────────────────
+
+# Check .NET 8 SDK is installed (must return 8.x.x)
+dotnet --version
+
+# Check PostgreSQL psql CLI is on PATH
+where psql
+
+# If psql is not on PATH, add its bin folder manually (Windows example):
+# Common locations: C:\Program Files\PostgreSQL\15\bin
+#                   C:\Program Files\PostgreSQL\16\bin
+#                   C:\Program Files\PostgreSQL\17\bin
+set PATH=C:\Program Files\PostgreSQL\15\bin;%PATH%
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 1 — CREATE POSTGRESQL USER AND DATABASE
+────────────────────────────────────────────────────────────────────────────────
+
+# Connect to PostgreSQL as superuser to run the following commands
+# (Enter YOUR_PG_PASSWORD when prompted — this is the postgres superuser password)
+
+# 1a. Create the application database user (skip if it already exists)
+psql -U postgres -h localhost -p 5432 -c "CREATE USER amartools_user WITH PASSWORD 'YOUR_APP_PASSWORD';"
+
+# 1b. Create the application database
+psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE amartools OWNER amartools_user;"
+
+# 1c. Grant all privileges on the database to the app user
+psql -U postgres -h localhost -p 5432 -c "GRANT ALL PRIVILEGES ON DATABASE amartools TO amartools_user;"
+
+# 1d. Ensure ownership is set correctly
+psql -U postgres -h localhost -p 5432 -c "ALTER DATABASE amartools OWNER TO amartools_user;"
+
+# ── Idempotent versions (safe to re-run) ─────────────────────────────────────
+
+# Create user only if it does not already exist
+psql -U postgres -h localhost -p 5432 -c "DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='amartools_user') THEN CREATE USER amartools_user WITH PASSWORD 'YOUR_APP_PASSWORD'; END IF; END $$;"
+
+# Update password in case it changed
+psql -U postgres -h localhost -p 5432 -c "ALTER USER amartools_user WITH PASSWORD 'YOUR_APP_PASSWORD';"
+
+# Create database only if it does not already exist (check first)
+psql -U postgres -h localhost -p 5432 -tAc "SELECT 1 FROM pg_database WHERE datname='amartools'"
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 2 — GENERATE JWT SECRET KEY
+────────────────────────────────────────────────────────────────────────────────
+
+# Generate a cryptographically secure 64-character base64 key (PowerShell)
+powershell -Command "[System.Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(48))"
+
+# Alternative (openssl, if installed)
+openssl rand -base64 48
+
+# Paste the output into appsettings.Development.json under Jwt.Key
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 3 — WRITE CONFIG FILE (appsettings.Development.json)
+────────────────────────────────────────────────────────────────────────────────
+
+# File location: src\AmarTools.Web\appsettings.Development.json
+# Contents to write (replace placeholders):
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=amartools;Username=amartools_user;Password=YOUR_APP_PASSWORD"
+  },
+  "Jwt": {
+    "Key": "YOUR_GENERATED_JWT_KEY_AT_LEAST_32_CHARS",
+    "Issuer": "AmarTools",
+    "Audience": "AmarTools.Clients",
+    "ExpiryMinutes": 1440
+  },
+  "App": {
+    "BaseUrl": "http://localhost:5201"
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ]
+  }
+}
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 4 — CREATE UPLOADS DIRECTORY
+────────────────────────────────────────────────────────────────────────────────
+
+# Windows CMD
+mkdir src\AmarTools.Web\wwwroot\uploads
+
+# Windows PowerShell
+New-Item -ItemType Directory -Force -Path "src\AmarTools.Web\wwwroot\uploads"
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 5 — RESTORE DOTNET LOCAL TOOLS
+────────────────────────────────────────────────────────────────────────────────
+
+# Run from repository root — installs dotnet-ef 8.0.26 from .config/dotnet-tools.json
+dotnet tool restore
+
+# Verify dotnet-ef is available
+dotnet dotnet-ef --version
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 6 — RESTORE NUGET PACKAGES
+────────────────────────────────────────────────────────────────────────────────
+
+# Restore all NuGet dependencies for the Web project (pulls in all referenced projects)
+dotnet restore src\AmarTools.Web\AmarTools.Web.csproj --verbosity quiet
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 7 — APPLY EF CORE DATABASE MIGRATIONS
+────────────────────────────────────────────────────────────────────────────────
+
+# Apply all pending migrations to the PostgreSQL database
+# The Infrastructure project has an IDesignTimeDbContextFactory so it is
+# both --project and --startup-project
+dotnet dotnet-ef database update ^
+    --project src\AmarTools.Infrastructure ^
+    --startup-project src\AmarTools.Infrastructure
+
+# Verify migrations were applied (should list ~25 tables)
+psql -U amartools_user -h localhost -d amartools -c "\dt"
+
+# ── Other useful EF commands ─────────────────────────────────────────────────
+
+# List all migrations and their applied status
+dotnet dotnet-ef migrations list ^
+    --project src\AmarTools.Infrastructure ^
+    --startup-project src\AmarTools.Infrastructure
+
+# Add a new migration after changing domain entities
+dotnet dotnet-ef migrations add MigrationName ^
+    --project src\AmarTools.Infrastructure ^
+    --startup-project src\AmarTools.Infrastructure ^
+    --output-dir Persistence\Migrations
+
+# Roll back the last migration (schema only, does not delete migration file)
+dotnet dotnet-ef database update PreviousMigrationName ^
+    --project src\AmarTools.Infrastructure ^
+    --startup-project src\AmarTools.Infrastructure
+
+# Drop all tables and start fresh (DELETES ALL DATA)
+psql -U amartools_user -h localhost -d amartools -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+dotnet dotnet-ef database update ^
+    --project src\AmarTools.Infrastructure ^
+    --startup-project src\AmarTools.Infrastructure
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 8 — BUILD THE PROJECT
+────────────────────────────────────────────────────────────────────────────────
+
+# Debug build (fast, no-restore since we already restored)
+dotnet build src\AmarTools.Web\AmarTools.Web.csproj -c Debug --no-restore --verbosity quiet
+
+# Release build
+dotnet build src\AmarTools.Web\AmarTools.Web.csproj -c Release --no-restore --verbosity quiet
+
+# Publish for production deployment
+dotnet publish src\AmarTools.Web\AmarTools.Web.csproj -c Release -o ./publish
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 9 — TRUST HTTPS DEVELOPER CERTIFICATE (first time only)
+────────────────────────────────────────────────────────────────────────────────
+
+# Trust the .NET self-signed dev certificate (run as Administrator for best results)
+dotnet dev-certs https --trust
+
+# If the certificate is corrupted or needs regenerating:
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+
+────────────────────────────────────────────────────────────────────────────────
+STEP 10 — RUN THE APPLICATION
+────────────────────────────────────────────────────────────────────────────────
+
+# Development mode (uses appsettings.Development.json automatically)
+cd src\AmarTools.Web
+dotnet run
+
+# Or from repository root:
+dotnet run --project src\AmarTools.Web\AmarTools.Web.csproj
+
+# Specify environment explicitly:
+dotnet run --project src\AmarTools.Web\AmarTools.Web.csproj --environment Development
+
+# Watch mode (auto-restarts on file changes):
+dotnet watch --project src\AmarTools.Web\AmarTools.Web.csproj
+
+────────────────────────────────────────────────────────────────────────────────
+APPLICATION URLs
+────────────────────────────────────────────────────────────────────────────────
+
+  App (HTTP)   :  http://localhost:5201
+  Swagger UI   :  http://localhost:5201/swagger
+
+────────────────────────────────────────────────────────────────────────────────
+DEFAULT ADMIN CREDENTIALS (change after first login!)
+────────────────────────────────────────────────────────────────────────────────
+
+  Email    :  admin@amartools.com
+  Password :  Admin@12345
+
+  Seeded automatically by IdentitySeeder on first app startup.
+
+────────────────────────────────────────────────────────────────────────────────
+TROUBLESHOOTING COMMANDS
+────────────────────────────────────────────────────────────────────────────────
+
+# Test PostgreSQL connection
+psql -U postgres -h localhost -p 5432 -c "\conninfo"
+
+# Test app user connection
+psql -U amartools_user -h localhost -d amartools -c "SELECT current_user, current_database();"
+
+# List databases
+psql -U postgres -h localhost -c "\l"
+
+# List roles/users
+psql -U postgres -h localhost -c "\du"
+
+# List tables in amartools database
+psql -U amartools_user -h localhost -d amartools -c "\dt"
+
+# Check EF migration history table
+psql -U amartools_user -h localhost -d amartools -c "SELECT * FROM \"__EFMigrationsHistory\";"
+
+# Check PostgreSQL service is running (Windows)
+sc query postgresql-x64-15
+net start postgresql-x64-15
+
+# Check listening ports
+netstat -an | findstr :5432
+netstat -an | findstr :5201
+
+================================================================================
+End of commands.txt
+================================================================================

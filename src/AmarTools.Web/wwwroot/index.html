@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AmarTools API</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #3e256c 0%, #6252a3 60%, #d7b4d5 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 48px 56px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 24px 64px rgba(62, 37, 108, 0.25);
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #3e256c, #6252a3);
+      border-radius: 16px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #3e256c;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fef1f0;
+      color: #3e256c;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 32px;
+      border: 1px solid #d7b4d5;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3e256c, #6252a3);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(62, 37, 108, 0.35);
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(62, 37, 108, 0.45); }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .endpoints {
+      text-align: left;
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 4px;
+    }
+
+    .endpoints p {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .endpoint-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .method {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      min-width: 38px;
+      text-align: center;
+    }
+    .post  { background: #dbeafe; color: #1d4ed8; }
+    .get   { background: #dcfce7; color: #15803d; }
+
+    .endpoint-path { color: #374151; font-family: monospace; }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .footer strong { color: #6252a3; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">AT</div>
+    <h1>AmarTools API</h1>
+    <p class="tagline">Event management platform for event firms.<br/>Powered by LogicThree.</p>
+    <span class="badge">v1.0 · .NET 8 · PostgreSQL</span>
+
+    <a class="btn btn-primary" href="/swagger">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 12h6M12 9v6M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/>
+      </svg>
+      Open API Explorer (Swagger)
+    </a>
+
+    <div class="divider">Quick Reference</div>
+
+    <div class="endpoints">
+      <p>Key Endpoints</p>
+
+      <div class="endpoint-row">
+        <span class="method post">POST</span>
+        <span class="endpoint-path">/api/auth/register</span>
+      </div>
+      <div class="endpoint-row">
+        <span class="method post">POST</span>
+        <span class="endpoint-path">/api/auth/login</span>
+      </div>
+      <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/api/events</span>
+      </div>
+      <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/api/certificate-generator/{id}</span>
+      </div>
+      <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/api/photo-frame/public/{eventToolId}</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      Built by <strong>LogicThree</strong> · AmarTools Platform
+    </div>
+  </div>
+</body>
+</html>

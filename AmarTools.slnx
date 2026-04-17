@@ -1,3 +1,21 @@
 <Solution>
-  <Project Path="AmarTools.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/AmarTools.BuildingBlocks/AmarTools.BuildingBlocks.csproj" />
+    <Project Path="src/AmarTools.Domain/AmarTools.Domain.csproj" />
+    <Project Path="src/AmarTools.Infrastructure/AmarTools.Infrastructure.csproj" />
+    <Project Path="src/AmarTools.Web/AmarTools.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Auth/">
+    <Project Path="src/Modules/Auth/AmarTools.Modules.Auth.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/CertificateGenerator/">
+    <Project Path="src/Modules/CertificateGenerator/AmarTools.Modules.CertificateGenerator.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Dashboard/">
+    <Project Path="src/Modules/Dashboard/AmarTools.Modules.Dashboard.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/PhotoFrame/">
+    <Project Path="src/Modules/PhotoFrame/AmarTools.Modules.PhotoFrame.csproj" />
+  </Folder>
 </Solution>

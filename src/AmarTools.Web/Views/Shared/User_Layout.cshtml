@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@(ViewData["Title"] != null ? ViewData["Title"] + " · " : "")AmarTools</title>
+
+  <script src="/js/auth.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #3e256c;
+      --secondary: #6252a3;
+      --accent:    #d7b4d5;
+      --surface:   #fef1f0;
+      --white:     #ffffff;
+      --text:      #1f1635;
+      --muted:     #6b7280;
+      --border:    #ede8f5;
+      --radius:    12px;
+      --shadow:    0 4px 24px rgba(62,37,108,.10);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .nav-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--border);
+      color: var(--primary);
+    }
+
+    .nav-links a:active {
+      transform: scale(0.96);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .btn-logout {
+      padding: 6px 13px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--border);
+    }
+
+    /* ── Mobile nav toggle ── */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--primary);
+    }
+
+    /* ── Main ── */
+    main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+  animation: fadeIn 0.25s ease;
+}
+
+@@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    footer strong { color: var(--secondary); }
+
+    /* ── Responsive ── */
+    @@media (max-width: 768px) {
+      .nav-links { display: none; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0; right: 0;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 16px 16px;
+        box-shadow: var(--shadow);
+        gap: 2px;
+      }
+
+      .nav-toggle { display: block; }
+      .user-name { display: none; }
+      main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav role="navigation">
+  <a class="nav-brand" href="/dashboard" id="navBrand">
+    <div class="nav-logo">AT</div>
+    <span class="nav-title">AmarTools</span>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/dashboard#events">Events</a></li>
+    @if (User.IsInRole(Roles.Owner) || User.IsInRole(Roles.Admin))
+    {
+      <li><a href="/swagger">API Docs</a></li>
+    }
+  </ul>
+
+  <div class="nav-user">
+    <div id="navAuth"></div>
+
+    <button class="nav-toggle"
+            onclick="document.getElementById('navLinks').classList.toggle('open')"
+            aria-label="Toggle menu">
+      ☰
+    </button>
+  </div>
+</nav>
+
+<main>
+  @RenderBody()
+</main>
+
+<footer>
+  Built by <strong>AmarTools Platform</strong>
+</footer>
+
+<script>
+  // Dynamic dashboard redirect
+  (function () {
+    var brand = document.getElementById('navBrand');
+    if (brand) brand.href = Auth.isAdmin() ? '/admin' : '/dashboard';
+  })();
+
+  // Auth UI
+  (function () {
+    var el = document.getElementById('navAuth');
+    if (!el) return;
+
+    if (Auth.isLoggedIn()) {
+      var u = Auth.getUser();
+      var name = u.fullName || 'User';
+      var init = name.charAt(0).toUpperCase();
+
+      el.innerHTML =
+        '<div class="avatar">' + init + '</div>' +
+        '<span class="user-name">' + name + '</span>' +
+        '<button class="btn-logout" onclick="Auth.logout()">Sign out</button>';
+    } else {
+      el.innerHTML =
+        '<a href="/login" style="font-size:13px;color:var(--secondary);text-decoration:none;font-weight:600;">Sign in</a>';
+    }
+  })();
+
+  // Active link highlight
+  (function () {
+    var links = document.querySelectorAll('.nav-links a');
+    links.forEach(link => {
+      if (link.href === window.location.href) {
+        link.classList.add('active');
+      }
+    });
+  })();
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

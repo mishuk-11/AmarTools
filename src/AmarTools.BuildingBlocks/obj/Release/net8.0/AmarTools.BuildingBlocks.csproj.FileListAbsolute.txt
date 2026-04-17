@@ -1,0 +1,11 @@
+E:\AmrTools\src\AmarTools.BuildingBlocks\bin\Release\net8.0\AmarTools.BuildingBlocks.deps.json
+E:\AmrTools\src\AmarTools.BuildingBlocks\bin\Release\net8.0\AmarTools.BuildingBlocks.dll
+E:\AmrTools\src\AmarTools.BuildingBlocks\bin\Release\net8.0\AmarTools.BuildingBlocks.pdb
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.AssemblyInfoInputs.cache
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.AssemblyInfo.cs
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.csproj.CoreCompileInputs.cache
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.dll
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\refint\AmarTools.BuildingBlocks.dll
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\AmarTools.BuildingBlocks.pdb
+E:\AmrTools\src\AmarTools.BuildingBlocks\obj\Release\net8.0\ref\AmarTools.BuildingBlocks.dll

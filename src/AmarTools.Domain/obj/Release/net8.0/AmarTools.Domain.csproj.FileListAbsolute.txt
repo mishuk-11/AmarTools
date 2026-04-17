@@ -1,0 +1,15 @@
+E:\AmrTools\src\AmarTools.Domain\bin\Release\net8.0\AmarTools.Domain.deps.json
+E:\AmrTools\src\AmarTools.Domain\bin\Release\net8.0\AmarTools.Domain.dll
+E:\AmrTools\src\AmarTools.Domain\bin\Release\net8.0\AmarTools.Domain.pdb
+E:\AmrTools\src\AmarTools.Domain\bin\Release\net8.0\AmarTools.BuildingBlocks.dll
+E:\AmrTools\src\AmarTools.Domain\bin\Release\net8.0\AmarTools.BuildingBlocks.pdb
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.csproj.AssemblyReference.cache
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.AssemblyInfoInputs.cache
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.AssemblyInfo.cs
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.csproj.CoreCompileInputs.cache
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTool.B1C6EF67.Up2Date
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.dll
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\refint\AmarTools.Domain.dll
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\AmarTools.Domain.pdb
+E:\AmrTools\src\AmarTools.Domain\obj\Release\net8.0\ref\AmarTools.Domain.dll

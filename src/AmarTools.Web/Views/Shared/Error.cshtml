@@ -1,0 +1,11 @@
+@model Microsoft.AspNetCore.Mvc.ProblemDetails
+@{
+    ViewData["Title"] = "Error";
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+
+<div style="text-align:center;padding:80px 24px">
+    <h1 style="font-size:48px;color:#3e256c">@(Model?.Status ?? 500)</h1>
+    <p style="color:#6b7280">@(Model?.Title ?? "An unexpected error occurred.")</p>
+    <a href="/" style="color:#6252a3">Go home</a>
+</div>
