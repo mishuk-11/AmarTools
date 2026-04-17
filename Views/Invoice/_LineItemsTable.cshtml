@@ -1,0 +1,42 @@
+﻿@model AmarTools.InvoiceGenerator.Models.InvoiceViewModel
+
+<table class="table table-bordered" id="itemsTable">
+    <thead class="table-light">
+        <tr>
+            <th>Description</th>
+            <th style="width:120px">Quantity</th>
+            <th style="width:140px">Unit Price</th>
+            <th style="width:120px">Total</th>
+            <th style="width:50px"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input name="Items[@i].Description" value="@Model.Items[i].Description" class="form-control" />
+                </td>
+                <td>
+                    <input name="Items[@i].Quantity" value="@Model.Items[i].Quantity" class="form-control text-end" type="number" step="0.01" />
+                </td>
+                <td>
+                    <input name="Items[@i].UnitPrice" value="@Model.Items[i].UnitPrice" class="form-control text-end" type="number" step="0.01" />
+                </td>
+                <td class="text-end fw-bold">
+                    @Model.Items[i].LineTotal.ToString("C")
+                </td>
+                <td>
+                    <button type="button"
+                            hx-post="@Url.Action("RemoveItem", "Invoice", new { index = i })"
+                            hx-include="#invoiceForm"
+                            hx-target="#lineItemsContainer"
+                            hx-swap="innerHTML"
+                            class="btn btn-sm btn-danger">
+                        ×
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

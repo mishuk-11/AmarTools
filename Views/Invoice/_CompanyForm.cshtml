@@ -1,0 +1,26 @@
+﻿@model AmarTools.InvoiceGenerator.Entities.CompanyInfo
+@{
+    var prefix = ViewData["Prefix"]?.ToString() ?? "";
+}
+
+<!-- Hidden ID - Critical for updates -->
+<input type="hidden" name="@(prefix).Id" value="@Model.Id" />
+
+<div class="mb-3">
+    <label class="form-label">Full Name / Company Name</label>
+    <input name="@(prefix).Name" value="@Model.Name" class="form-control" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Address</label>
+    <textarea name="@(prefix).Address" class="form-control" rows="3">@Model.Address</textarea>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input name="@(prefix).Email" value="@Model.Email" class="form-control" type="email" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input name="@(prefix).Phone" value="@Model.Phone" class="form-control" type="tel" />
+    </div>
+</div>

@@ -1,0 +1,8 @@
+ bin/
+obj/
+.vs/
+*.user
+*.suo
+*.vsidx
+appsettings.Development.json
+wwwroot/lib/

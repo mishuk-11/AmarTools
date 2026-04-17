@@ -1,0 +1,17 @@
+﻿@model AmarTools.InvoiceGenerator.Models.InvoiceViewModel
+
+<div class="d-flex gap-2 mt-4">
+    <button type="button" 
+            onclick="document.getElementById('invoiceForm').submit();"
+            class="btn btn-success flex-fill">
+        <i class="bi bi-save"></i> Save for Later
+    </button>
+
+    <button type="button" 
+            hx-post="@Url.Action("GeneratePdf")" 
+            hx-include="#invoiceForm"
+            hx-target="body"
+            class="btn btn-primary flex-fill">
+        <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+    </button>
+</div>

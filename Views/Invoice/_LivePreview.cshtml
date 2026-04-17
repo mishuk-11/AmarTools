@@ -1,0 +1,88 @@
+﻿@model AmarTools.InvoiceGenerator.Models.InvoiceViewModel
+<div class="invoice-preview p-4 border bg-white" style="min-height: 800px; font-family: Arial, sans-serif;">
+    <h4 class="text-center mb-4">Invoice Preview</h4>
+
+    <div class="d-flex justify-content-between mb-4">
+        <div>
+            <strong>From:</strong><br />
+            @Model.From.Name<br />
+            @Html.Raw(Model.From.Address?.Replace("\n", "<br />"))
+        </div>
+        <div class="text-end">
+            <strong>To:</strong><br />
+            @Model.To.Name<br />
+            @Html.Raw(Model.To.Address?.Replace("\n", "<br />"))
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <span><strong>Invoice #:</strong> @Model.InvoiceNumber</span>&nbsp;&nbsp;
+        <span><strong>Issue Date:</strong> @Model.IssueDate.ToString("dd MMM yyyy")</span>
+        @if (Model.DueDate.HasValue)
+        {
+            <span>&nbsp;&nbsp;<strong>Due Date:</strong> @Model.DueDate.Value.ToString("dd MMM yyyy")</span>
+        }
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th class="text-end">Qty</th>
+                <th class="text-end">Rate</th>
+                <th class="text-end">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td class="text-end">@item.Quantity.ToString("F2")</td>
+                    <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                    <td class="text-end">@item.LineTotal.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end">Subtotal</td>
+                <td class="text-end">@Model.Subtotal.ToString("C")</td>
+            </tr>
+            @if ((Model.TaxRate ?? 0) > 0)
+            {
+                <tr>
+                    <td colspan="3" class="text-end">Tax (@Model.TaxRate%)</td>
+                    <td class="text-end">@Model.TaxAmount.ToString("C")</td>
+                </tr>
+            }
+            @if ((Model.DiscountAmount ?? 0) > 0)
+            {
+                <tr>
+                    <td colspan="3" class="text-end">Discount</td>
+                    <td class="text-end">-@Model.DiscountAmount?.ToString("C")</td>  @* Fix: nullable ToString *@
+                </tr>
+            }
+            <tr class="table-primary fw-bold">
+                <td colspan="3" class="text-end">Grand Total</td>
+                <td class="text-end">@Model.GrandTotal.ToString("C")</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <div class="mt-4">
+            <strong>Notes:</strong><br />
+            @Model.Notes
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Terms))
+    {
+        <div class="mt-3">
+            <strong>Terms & Conditions:</strong><br />
+            @Model.Terms
+        </div>
+    }
+</div>

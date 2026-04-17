@@ -1,0 +1,92 @@
+﻿@model IEnumerable<AmarTools.InvoiceGenerator.Entities.Invoice>
+
+@{
+    ViewData["Title"] = "Invoice History";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Invoice History</h2>
+    <a asp-controller="Invoice" asp-action="Generate" class="btn btn-primary">
+        + New Invoice
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Draft/info alert *@
+@if (TempData["Info"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Note:</strong> @TempData["Info"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <h5 class="text-muted">No invoices found.</h5>
+        <a asp-controller="Invoice" asp-action="Generate" class="btn btn-primary mt-3">
+            Create Your First Invoice
+        </a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Invoice #</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th class="text-end">Grand Total</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model)
+                {
+                    <tr>
+                        <td><strong>@invoice.InvoiceNumber</strong></td>
+                        <td>@invoice.FromCompany?.Name</td>
+                        <td>@invoice.ToCompany?.Name</td>
+                        <td>@invoice.IssueDate.ToString("dd MMM yyyy")</td>
+                        <td>@(invoice.DueDate.HasValue? invoice.DueDate.Value.ToString("dd MMM yyyy") : "-")</td>
+                        <td class="text-end">@invoice.GrandTotal.ToString("C")</td>
+                        <td class="text-center">
+                            <a asp-controller="Invoice" asp-action="Load" asp-route-id="@invoice.Id"
+                               class="btn btn-sm btn-outline-primary me-1">
+                                Load
+                            </a>
+                            <form asp-controller="Invoice" asp-action="Delete" asp-route-id="@invoice.Id"
+                                  method="post" style="display:inline"
+                                  onsubmit="return confirm('Delete this invoice?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
