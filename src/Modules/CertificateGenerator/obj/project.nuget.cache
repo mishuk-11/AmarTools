@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ujcw2hpTArc=",
+  "dgSpecHash": "x+aNgYAGXLk=",
   "success": true,
-  "projectFilePath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj",
+  "projectFilePath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\InZu\\.nuget\\packages\\mediatr\\12.5.0\\mediatr.12.5.0.nupkg.sha512",
     "C:\\Users\\InZu\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",

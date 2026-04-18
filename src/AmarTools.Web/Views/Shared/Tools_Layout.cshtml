@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@(ViewData["Title"] != null ? ViewData["Title"] + " · " : "")AmarTools</title>
+  <link rel="icon" type="image/png" href="/images/icon.png" />
   <script src="/js/auth.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,10 +48,9 @@
     }
     .topnav-logo {
       width: 32px; height: 32px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
       border-radius: 8px;
+      overflow: hidden;
       display: flex; align-items: center; justify-content: center;
-      color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 1px;
     }
     .topnav-title { font-size: 15px; font-weight: 700; color: var(--primary); }
     .topnav-right  { display: flex; align-items: center; gap: 10px; }
@@ -135,7 +135,7 @@
   <div style="display:flex;align-items:center;gap:10px;">
     <button class="mob-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
     <a class="topnav-brand" href="/dashboard" id="topBrand">
-      <div class="topnav-logo">AT</div>
+      <img class="topnav-logo" src="/images/icon.png" alt="AmarTools" style="width:32px;height:32px;object-fit:contain;" />
       <span class="topnav-title">AmarTools</span>
     </a>
   </div>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmarTools.Modules.PhotoFrame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5187b0b9cd8aea7fad8e40f2b6a67c34dde0e0f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmarTools.Modules.PhotoFrame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmarTools.Modules.PhotoFrame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Y3yJ4jl12Lo=",
+  "dgSpecHash": "aKJCS5SPCOo=",
   "success": true,
-  "projectFilePath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
+  "projectFilePath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\InZu\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\InZu\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.26\\microsoft.aspnetcore.cryptography.internal.8.0.26.nupkg.sha512",

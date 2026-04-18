@@ -43,14 +43,27 @@ internal sealed class LoginHandler
         if (!passwordValid)
             return Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password.");
 
-        // ── 3. Load domain user ───────────────────────────────────────────────
+        // ── 3. Check account ban ──────────────────────────────────────────────
+        if (identityUser.LockoutEnabled &&
+            identityUser.LockoutEnd.HasValue &&
+            identityUser.LockoutEnd.Value > DateTimeOffset.UtcNow)
+        {
+            var banEnd      = identityUser.LockoutEnd.Value;
+            var isPermanent = banEnd.Year >= 9999;
+            var msg         = isPermanent
+                ? "Your account has been permanently banned. Contact support."
+                : $"Your account is banned until {banEnd.UtcDateTime:dd MMM yyyy HH:mm} UTC.";
+            return Error.Forbidden("Auth.AccountBanned", msg);
+        }
+
+        // ── 4. Load domain user ───────────────────────────────────────────────
         var domainUser = await _db.DomainUsers
             .FirstOrDefaultAsync(u => u.Id == identityUser.Id, ct);
 
         if (domainUser is null)
             return Error.Failure("Auth.ProfileMissing", "User profile not found. Please contact support.");
 
-        // ── 4. Get roles + issue token with role claims ───────────────────────
+        // ── 5. Get roles + issue token with role claims ───────────────────────
         var roles = await _userManager.GetRolesAsync(identityUser);
         var (token, expiresAt) = _tokenService.CreateToken(domainUser, roles);
 

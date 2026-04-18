@@ -68,14 +68,14 @@
   .btn-approve:hover { background: #bbf7d0; }
   .btn-reject:hover  { background: #fecaca; }
   .btn-approve:disabled, .btn-reject:disabled { opacity: .5; cursor: not-allowed; }
-  .btn-make-admin   { background: #ede8f5; color: #3e256c; margin-right:4px; }
-  .btn-make-admin:hover { background: #d7b4d5; }
   .btn-rem-admin    { background: #fef9c3; color: #854d0e; margin-right:4px; }
   .btn-rem-admin:hover { background: #fde68a; }
   .btn-ban          { background: #fef2f2; color: #991b1b; margin-right:4px; }
   .btn-ban:hover    { background: #fecaca; }
   .btn-unban        { background: #f0fdf4; color: #166534; margin-right:4px; }
   .btn-unban:hover  { background: #bbf7d0; }
+  .btn-create-admin { background: #ede8f5; color: #3e256c; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-create-admin:hover { background: #d7b4d5; }
   .badge-admin { background: #ede8f5; color: #3e256c; border: 1px solid #d7b4d5; }
   .badge-banned { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
@@ -162,10 +162,15 @@
 </div>
 
 <!-- ── Users & Subscriptions ─────────────────────────────────────────────── -->
-<p class="section-title">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-  Users &amp; Subscriptions
-</p>
+<div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;">
+  <p class="section-title" style="margin:0;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Users &amp; Subscriptions
+  </p>
+  <button class="btn-create-admin" onclick="openCreateAdminModal()">
+    + Create Admin
+  </button>
+</div>
 <div class="table-wrap">
   <table class="data-table">
     <thead>
@@ -203,10 +208,35 @@
   </div>
 </div>
 
-<script>
-const token = Auth.getToken();
+<!-- Create Admin modal -->
+<div id="createAdminModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(62,37,108,.2);">
+    <div style="font-size:16px;font-weight:800;color:#3e256c;margin-bottom:6px;">Create Admin Account</div>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:18px;">Create a new administrator account with email and password.</p>
+    <div id="createAdminError" style="display:none;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:14px;"></div>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:5px;text-transform:uppercase;">Full Name</label>
+      <input id="caFullName" type="text" placeholder="Admin Name" style="width:100%;padding:10px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;" />
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:5px;text-transform:uppercase;">Email Address</label>
+      <input id="caEmail" type="email" placeholder="admin@example.com" style="width:100%;padding:10px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;" />
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:5px;text-transform:uppercase;">Password</label>
+      <input id="caPassword" type="password" placeholder="Strong password…" style="width:100%;padding:10px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;" />
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeCreateAdminModal()" style="padding:9px 18px;border:1px solid #e5e7eb;border-radius:9px;background:#f3f4f6;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+      <button onclick="confirmCreateAdmin()" id="caSubmitBtn" style="padding:9px 18px;border:none;border-radius:9px;background:#3e256c;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Create Admin</button>
+    </div>
+  </div>
+</div>
 
-const h = { 'Authorization': `Bearer ${token}` };
+<script>
+const token   = Auth.getToken();
+const h       = { 'Authorization': `Bearer ${token}` };
+const myId    = (Auth.getUser()?.id || '').toLowerCase();
 
 function esc(s) {
   return String(s ?? '—').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -331,12 +361,13 @@ async function loadUsers() {
           ? ' <span class="badge badge-banned">Banned</span>'
           : ` <span class="badge badge-banned">Banned until ${fmtDate(u.banUntil)}</span>`)
         : '';
-      const adminBtn = u.isAdmin
+      const isSelf = u.id.toLowerCase() === myId;
+      const adminBtn = (!isSelf && u.isAdmin)
         ? `<button class="btn-action btn-rem-admin" onclick="removeAdmin('${u.id}')">Remove Admin</button>`
-        : `<button class="btn-action btn-make-admin" onclick="makeAdmin('${u.id}')">Make Admin</button>`;
-      const banBtn = u.isBanned
+        : '';
+      const banBtn = isSelf ? '' : (u.isBanned
         ? `<button class="btn-action btn-unban" onclick="unbanUser('${u.id}')">Unban</button>`
-        : `<button class="btn-action btn-ban" onclick="openBanModal('${u.id}')">Ban</button>`;
+        : `<button class="btn-action btn-ban" onclick="openBanModal('${u.id}')">Ban</button>`);
       return `<tr id="urow-${u.id}">
         <td>
           <div style="display:flex;align-items:center;gap:9px;">
@@ -357,15 +388,12 @@ async function loadUsers() {
   }
 }
 
-async function makeAdmin(id) {
-  if (!confirm('Promote this user to Admin? They will gain full admin access.')) return;
-  const r = await fetch(`/api/admin/users/${id}/make-admin`, { method:'POST', headers: h });
-  r.ok ? loadUsers() : alert('Failed to promote user.');
-}
 async function removeAdmin(id) {
   if (!confirm('Remove Admin role from this user?')) return;
   const r = await fetch(`/api/admin/users/${id}/remove-admin`, { method:'POST', headers: h });
-  r.ok ? loadUsers() : alert('Failed to remove admin role.');
+  if (r.ok) { loadUsers(); return; }
+  const err = await r.json().catch(() => ({}));
+  alert(err.detail || 'Failed to remove admin role.');
 }
 function openBanModal(id) {
   document.getElementById('banUserId').value = id;
@@ -381,12 +409,64 @@ async function confirmBan() {
     headers: { ...h, 'Content-Type': 'application/json' },
     body: JSON.stringify({ days: days ? parseInt(days) : null })
   });
-  r.ok ? loadUsers() : alert('Failed to ban user.');
+  if (r.ok) { loadUsers(); return; }
+  const err = await r.json().catch(() => ({}));
+  alert(err.detail || 'Failed to ban user.');
 }
 async function unbanUser(id) {
   if (!confirm('Remove ban from this user?')) return;
   const r = await fetch(`/api/admin/users/${id}/unban`, { method:'POST', headers: h });
   r.ok ? loadUsers() : alert('Failed to unban user.');
+}
+
+function openCreateAdminModal() {
+  document.getElementById('caFullName').value  = '';
+  document.getElementById('caEmail').value     = '';
+  document.getElementById('caPassword').value  = '';
+  document.getElementById('createAdminError').style.display = 'none';
+  document.getElementById('createAdminModal').style.display = 'flex';
+}
+function closeCreateAdminModal() {
+  document.getElementById('createAdminModal').style.display = 'none';
+}
+async function confirmCreateAdmin() {
+  const fullName = document.getElementById('caFullName').value.trim();
+  const email    = document.getElementById('caEmail').value.trim();
+  const password = document.getElementById('caPassword').value;
+  const errEl    = document.getElementById('createAdminError');
+  const btn      = document.getElementById('caSubmitBtn');
+
+  errEl.style.display = 'none';
+  if (!fullName || !email || !password) {
+    errEl.textContent = 'All fields are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating…';
+  try {
+    const r = await fetch('/api/admin/create-admin', {
+      method: 'POST',
+      headers: { ...h, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName, email, password })
+    });
+    if (r.ok) {
+      closeCreateAdminModal();
+      loadUsers();
+      loadStats();
+    } else {
+      const err = await r.json().catch(() => ({}));
+      errEl.textContent = err.detail || 'Failed to create admin.';
+      errEl.style.display = 'block';
+    }
+  } catch {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Admin';
+  }
 }
 
 // Load everything on page load

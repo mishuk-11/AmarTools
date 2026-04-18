@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {}
+    "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {}
   },
   "projects": {
-    "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
+    "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj",
+        "projectUniqueName": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj",
         "projectName": "AmarTools.BuildingBlocks",
-        "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj",
+        "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj",
         "packagesPath": "C:\\Users\\InZu\\.nuget\\packages\\",
-        "outputPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\obj\\",
+        "outputPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

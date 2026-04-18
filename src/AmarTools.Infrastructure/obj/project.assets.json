@@ -2364,11 +2364,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
+      "projectUniqueName": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
       "projectName": "AmarTools.Infrastructure",
-      "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
+      "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\InZu\\.nuget\\packages\\",
-      "outputPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\obj\\",
+      "outputPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2390,11 +2390,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj"
             }
           }
         }

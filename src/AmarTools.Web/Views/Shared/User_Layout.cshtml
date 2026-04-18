@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@(ViewData["Title"] != null ? ViewData["Title"] + " · " : "")AmarTools</title>
+  <link rel="icon" type="image/png" href="/images/icon.png" />
 
   <script src="/js/auth.js"></script>
 
@@ -58,15 +59,11 @@
     .nav-logo {
       width: 34px;
       height: 34px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
       border-radius: 8px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 12px;
-      letter-spacing: 1px;
     }
 
     .nav-title {
@@ -211,7 +208,7 @@
 
 <nav role="navigation">
   <a class="nav-brand" href="/dashboard" id="navBrand">
-    <div class="nav-logo">AT</div>
+    <img class="nav-logo" src="/images/icon.png" alt="AmarTools" style="width:34px;height:34px;object-fit:contain;" />
     <span class="nav-title">AmarTools</span>
   </a>
 

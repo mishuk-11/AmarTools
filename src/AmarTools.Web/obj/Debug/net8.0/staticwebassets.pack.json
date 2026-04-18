@@ -1,27 +1,43 @@
 {
   "Files": [
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\index.html",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\images\\icon.png",
+      "PackagePath": "staticwebassets\\images\\icon.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\js\\auth.js",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\js\\auth.js",
       "PackagePath": "staticwebassets\\js\\auth.js"
     },
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\4edf04d6e48940d1b1233ea458ac2697_template.png",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\4edf04d6e48940d1b1233ea458ac2697_template.png",
       "PackagePath": "staticwebassets\\uploads\\frames\\4edf04d6e48940d1b1233ea458ac2697_template.png"
     },
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\6a78d00b05354a7d991aba4950fcc350_template.png",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\6a78d00b05354a7d991aba4950fcc350_template.png",
       "PackagePath": "staticwebassets\\uploads\\frames\\6a78d00b05354a7d991aba4950fcc350_template.png"
     },
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\65dcbe7193254283937899221dae7c5c_event_logo.png",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\frames\\a8bc7529c9f6488293bad422818d15b4_Artboard 1@4x~1.png",
+      "PackagePath": "staticwebassets\\uploads\\frames\\a8bc7529c9f6488293bad422818d15b4_Artboard 1@4x~1.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\00736fd16d2e4ccc9bb0fbfd47cf6550_Artboard 7@4x.png",
+      "PackagePath": "staticwebassets\\uploads\\logos\\00736fd16d2e4ccc9bb0fbfd47cf6550_Artboard 7@4x.png"
+    },
+    {
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\65dcbe7193254283937899221dae7c5c_event_logo.png",
       "PackagePath": "staticwebassets\\uploads\\logos\\65dcbe7193254283937899221dae7c5c_event_logo.png"
     },
     {
-      "Id": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\b71cf68f9eaf457dae39a9531253f825_event_logo.png",
+      "Id": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\wwwroot\\uploads\\logos\\b71cf68f9eaf457dae39a9531253f825_event_logo.png",
       "PackagePath": "staticwebassets\\uploads\\logos\\b71cf68f9eaf457dae39a9531253f825_event_logo.png"
     },
     {

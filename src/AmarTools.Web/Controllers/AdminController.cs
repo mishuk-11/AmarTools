@@ -1,4 +1,6 @@
+using AmarTools.BuildingBlocks.Interfaces;
 using AmarTools.BuildingBlocks.Security;
+using AmarTools.Domain.Entities;
 using AmarTools.Domain.Enums;
 using AmarTools.Infrastructure.Identity;
 using AmarTools.Infrastructure.Persistence;
@@ -17,13 +19,18 @@ namespace AmarTools.Web.Controllers;
 [ApiController]
 public sealed class AdminController : ApiControllerBase
 {
-    private readonly AppDbContext              _db;
+    private readonly AppDbContext                 _db;
     private readonly UserManager<AppIdentityUser> _userManager;
+    private readonly ICurrentUserService          _currentUser;
 
-    public AdminController(AppDbContext db, UserManager<AppIdentityUser> userManager)
+    public AdminController(
+        AppDbContext db,
+        UserManager<AppIdentityUser> userManager,
+        ICurrentUserService currentUser)
     {
         _db          = db;
         _userManager = userManager;
+        _currentUser = currentUser;
     }
 
     // ── GET /api/admin/stats ──────────────────────────────────────────────────
@@ -140,6 +147,9 @@ public sealed class AdminController : ApiControllerBase
     [HttpPost("users/{userId:guid}/remove-admin")]
     public async Task<IActionResult> RemoveAdmin(Guid userId)
     {
+        if (userId == _currentUser.UserId)
+            return BadRequest(new { detail = "You cannot remove your own Admin role." });
+
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user is null) return NotFound();
 
@@ -153,13 +163,16 @@ public sealed class AdminController : ApiControllerBase
     [HttpPost("users/{userId:guid}/ban")]
     public async Task<IActionResult> BanUser(Guid userId, [FromBody] BanRequest request)
     {
+        if (userId == _currentUser.UserId)
+            return BadRequest(new { detail = "You cannot ban your own account." });
+
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user is null) return NotFound();
 
         user.LockoutEnabled = true;
         user.LockoutEnd     = request.Days.HasValue
             ? DateTimeOffset.UtcNow.AddDays(request.Days.Value)
-            : DateTimeOffset.MaxValue; // permanent
+            : DateTimeOffset.MaxValue;
 
         await _userManager.UpdateAsync(user);
         return base.Ok(new { message = request.Days.HasValue ? $"User banned for {request.Days} days." : "User permanently banned." });
@@ -175,6 +188,47 @@ public sealed class AdminController : ApiControllerBase
         await _userManager.SetLockoutEndDateAsync(user, null);
         return base.Ok(new { message = "User unbanned." });
     }
+
+    // ── POST /api/admin/create-admin ──────────────────────────────────────────
+    [HttpPost("create-admin")]
+    public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminRequest request, CancellationToken ct)
+    {
+        var email = request.Email.Trim().ToLowerInvariant();
+
+        var exists = await _db.DomainUsers.AnyAsync(u => u.Email == email, ct);
+        if (exists)
+            return Conflict(new { detail = "An account with this email already exists." });
+
+        var identityUser = new AppIdentityUser
+        {
+            Id             = Guid.NewGuid(),
+            UserName       = email,
+            Email          = email,
+            FullName       = request.FullName.Trim(),
+            EmailConfirmed = true
+        };
+
+        var result = await _userManager.CreateAsync(identityUser, request.Password);
+        if (!result.Succeeded)
+            return BadRequest(new { detail = result.Errors.First().Description });
+
+        await _userManager.AddToRoleAsync(identityUser, Roles.Admin);
+
+        var domainUser = ApplicationUser.Create(request.FullName.Trim(), email);
+        SetDomainUserId(domainUser, identityUser.Id);
+        _db.DomainUsers.Add(domainUser);
+        await _db.SaveChangesAsync(ct);
+
+        return base.Ok(new { message = $"Admin account created for {email}." });
+    }
+
+    private static void SetDomainUserId(ApplicationUser entity, Guid id)
+    {
+        var prop = typeof(AmarTools.BuildingBlocks.Domain.BaseEntity)
+            .GetProperty(nameof(AmarTools.BuildingBlocks.Domain.BaseEntity.Id));
+        prop?.SetValue(entity, id);
+    }
 }
 
 public sealed record BanRequest(int? Days);
+public sealed record CreateAdminRequest(string FullName, string Email, string Password);

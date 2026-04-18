@@ -22,10 +22,9 @@
   }
   .auth-logo {
     width: 48px; height: 48px;
-    background: linear-gradient(135deg, #3e256c, #6252a3);
     border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-weight: 800; font-size: 18px;
+    overflow: hidden;
+    display: block;
     margin: 0 auto 20px;
   }
   .auth-title  { font-size: 22px; font-weight: 800; color: #3e256c; text-align: center; margin-bottom: 4px; }
@@ -102,7 +101,7 @@
 
 <div class="auth-wrap">
   <div class="auth-card">
-    <div class="auth-logo">AT</div>
+    <img class="auth-logo" src="/images/icon.png" alt="AmarTools" style="width:48px;height:48px;object-fit:contain;" />
 
     <!-- Step 1: Fill form -->
     <div class="step active" id="step1">

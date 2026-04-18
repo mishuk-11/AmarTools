@@ -9,79 +9,79 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AmarTools.Web
 build_property.RootNamespace = AmarTools.Web
-build_property.ProjectDir = D:\AmarTools\AmrTools\AmrTools\src\AmarTools.Web\
+build_property.ProjectDir = D:\AmarTools\Pull2\AmarTools\src\AmarTools.Web\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\AmarTools\AmrTools\AmrTools\src\AmarTools.Web
+build_property.MSBuildProjectDirectory = D:\AmarTools\Pull2\AmarTools\src\AmarTools.Web
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Account/Login.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Account/Register.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Home/Admin.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Home/Admin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Home/Dashboard.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Home/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Home/Index.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Kiosk/Index.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Kiosk/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2lvc2tcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Shared/Admin_Layout.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Shared/Admin_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEFkbWluX0xheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Shared/Error.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Shared/Tools_Layout.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Shared/Tools_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFRvb2xzX0xheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Shared/User_Layout.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Shared/User_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFVzZXJfTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Tools/Certificates.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Tools/Certificates.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcQ2VydGlmaWNhdGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Tools/Contacts.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Tools/Contacts.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcQ29udGFjdHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Tools/Events.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Tools/Events.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcRXZlbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/Tools/PhotoFrame.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/Tools/PhotoFrame.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcUGhvdG9GcmFtZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/_ViewImports.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/AmarTools/AmrTools/AmrTools/src/AmarTools.Web/Views/_ViewStart.cshtml]
+[D:/AmarTools/Pull2/AmarTools/src/AmarTools.Web/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

@@ -1898,11 +1898,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\AmarTools.Web.csproj",
+      "projectUniqueName": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\AmarTools.Web.csproj",
       "projectName": "AmarTools.Web",
-      "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\AmarTools.Web.csproj",
+      "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\AmarTools.Web.csproj",
       "packagesPath": "C:\\Users\\InZu\\.nuget\\packages\\",
-      "outputPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Web\\obj\\",
+      "outputPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1924,26 +1924,26 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.BuildingBlocks\\AmarTools.BuildingBlocks.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Domain\\AmarTools.Domain.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\AmarTools.Infrastructure\\AmarTools.Infrastructure.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\Auth\\AmarTools.Modules.Auth.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\Auth\\AmarTools.Modules.Auth.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\Auth\\AmarTools.Modules.Auth.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\Auth\\AmarTools.Modules.Auth.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\CertificateGenerator\\AmarTools.Modules.CertificateGenerator.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\Dashboard\\AmarTools.Modules.Dashboard.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\Dashboard\\AmarTools.Modules.Dashboard.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\Dashboard\\AmarTools.Modules.Dashboard.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\Dashboard\\AmarTools.Modules.Dashboard.csproj"
             },
-            "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj": {
-              "projectPath": "D:\\AmarTools\\AmrTools\\AmrTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj"
+            "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj": {
+              "projectPath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj"
             }
           }
         }

@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@(ViewData["Title"] != null ? ViewData["Title"] + " · " : "")Admin · AmarTools</title>
+  <link rel="icon" type="image/png" href="/images/icon.png" />
   <script src="/js/auth.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,14 +55,11 @@
     .sidebar-logo {
       width: 36px;
       height: 36px;
-      background: rgba(255,255,255,.15);
       border-radius: 8px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 13px;
     }
 
     .sidebar-title {
@@ -250,7 +248,7 @@
 
 <div class="sidebar" id="sidebar">
   <a class="sidebar-brand" href="/admin">
-    <div class="sidebar-logo">AT</div>
+    <img class="sidebar-logo" src="/images/icon.png" alt="AmarTools" style="width:36px;height:36px;object-fit:contain;" />
     <div>
       <div class="sidebar-title">AmarTools</div>
       <div class="sidebar-subtitle">Admin Panel</div>
