@@ -17,6 +17,7 @@ internal sealed class PhotoFrameConfigConfiguration : IEntityTypeConfiguration<P
         builder.Property(p => p.VenueName).HasMaxLength(500);
         builder.Property(p => p.FrameImagePath).HasMaxLength(1000);
         builder.Property(p => p.LogoImagePath).HasMaxLength(1000);
+        builder.Property(p => p.SponsorLogoPath).HasMaxLength(1000);
         // Do NOT use HasDefaultValue here — it causes EF Core to mark IsPublished as
         // ValueGeneratedOnAdd and omit it from INSERT statements (relying on RETURNING).
         // We always set IsPublished explicitly in PhotoFrameConfig.Create(), so EF Core

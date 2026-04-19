@@ -32,6 +32,9 @@ public sealed class PhotoFrameConfig : AuditableEntity
     /// <summary>Storage-relative path to the optional event logo image.</summary>
     public string? LogoImagePath { get; private set; }
 
+    /// <summary>Storage-relative path to the optional sponsor logo image.</summary>
+    public string? SponsorLogoPath { get; private set; }
+
     // ── Event Details (overlaid on the frame or shown on landing page) ────────
 
     public string  EventName    { get; private set; } = string.Empty;
@@ -88,6 +91,9 @@ public sealed class PhotoFrameConfig : AuditableEntity
 
     /// <summary>Sets or replaces the event logo path.</summary>
     public void SetLogo(string? storagePath) => LogoImagePath = storagePath;
+
+    /// <summary>Sets or replaces the sponsor logo path.</summary>
+    public void SetSponsorLogo(string? storagePath) => SponsorLogoPath = storagePath;
 
     /// <summary>Updates event detail metadata shown on the landing page.</summary>
     public void UpdateDetails(

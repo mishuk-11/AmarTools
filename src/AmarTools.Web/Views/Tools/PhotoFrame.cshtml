@@ -30,7 +30,7 @@
   .btn-danger:hover{background:#fef2f2;}
 
   /* Upload boxes */
-  .upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+  .upload-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
   .upload-card{background:#fff;border:1px solid #ede8f5;border-radius:14px;padding:20px;}
   .upload-card-title{font-size:13px;font-weight:700;color:#3e256c;margin-bottom:4px;display:flex;align-items:center;gap:7px;}
   .upload-card-sub{font-size:11px;color:#9ca3af;margin-bottom:14px;}
@@ -77,11 +77,44 @@
   .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
   @@keyframes spin{to{transform:rotate(360deg)}}
 
+  /* Mode tabs (sponsor toggle) */
+  .mode-tabs{display:inline-flex;background:#f3f4f6;border-radius:9px;padding:3px;gap:2px;margin-bottom:10px;}
+  .mode-tab{padding:6px 14px;border-radius:7px;border:none;background:transparent;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;transition:all .15s;}
+  .mode-tab.active{background:#fff;color:#3e256c;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+  /* Template picker */
+  .template-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px;}
+  .tmpl-card{border:2px solid #e5e7eb;border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s,background .15s;background:#fafafa;}
+  .tmpl-card:hover{border-color:#6252a3;background:#faf8ff;}
+  .tmpl-card.selected{border-color:#6252a3;background:#f5f3ff;}
+  .tmpl-preview{height:64px;border-radius:7px;background:#ede8f5;margin-bottom:10px;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:3px;padding:6px;}
+  .tmpl-hdr{background:#6252a3;border-radius:4px;height:10px;}
+  .tmpl-body{display:flex;flex:1;gap:3px;}
+  .tmpl-canvas{background:#c4b5d5;border-radius:4px;flex:1;}
+  .tmpl-ctrl{background:#ddd6fe;border-radius:4px;height:8px;}
+  .tmpl-side-body{display:flex;flex:1;gap:3px;}
+  .tmpl-side-canvas{background:#c4b5d5;border-radius:4px;width:55%;}
+  .tmpl-side-info{display:flex;flex-direction:column;gap:3px;flex:1;}
+  .tmpl-side-info-bar{background:#ddd6fe;border-radius:3px;height:8px;}
+  .tmpl-minimal-body{display:flex;flex:1;align-items:center;justify-content:center;}
+  .tmpl-minimal-canvas{background:#c4b5d5;border-radius:4px;width:60%;height:90%;}
+  .tmpl-label{font-size:12px;font-weight:700;color:#3e256c;}
+  .tmpl-sub{font-size:11px;color:#9ca3af;}
+
+  /* Palette picker */
+  .palette-picker{display:flex;gap:10px;flex-wrap:wrap;}
+  .palette-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:2px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;transition:border-color .15s;font-size:12px;font-weight:600;color:#374151;}
+  .palette-swatch:hover{border-color:#6252a3;}
+  .palette-swatch.selected{border-color:#6252a3;background:#f5f3ff;}
+  .swatch-dot{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.3);}
+
+  @@media(max-width:900px){.upload-grid{grid-template-columns:1fr 1fr;}.template-picker{grid-template-columns:1fr 1fr;}}
   @@media(max-width:700px){
     .upload-grid{grid-template-columns:1fr;}
     .form-row{grid-template-columns:1fr;}
     .url-row{flex-direction:column;}
     .live-banner-top{flex-direction:column;}
+    .template-picker{grid-template-columns:1fr;}
   }
 </style>
 
@@ -136,7 +169,7 @@
     </div>
   </div>
 
-  <!-- Draft banner (saved but not published) -->
+  <!-- Draft banner -->
   <div id="draftBanner" style="display:none;" class="draft-banner">
     <div>
       <div style="margin-bottom:4px;"><span class="draft-badge">DRAFT</span></div>
@@ -149,9 +182,10 @@
     </button>
   </div>
 
-  <!-- Editor (shown when creating or editing) -->
+  <!-- Editor -->
   <div id="editorSection">
-    <!-- Frame + Logo uploads -->
+
+    <!-- Image uploads: Frame + Logo + Background -->
     <div class="upload-grid">
       <div class="upload-card">
         <div class="upload-card-title">
@@ -176,7 +210,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 8 0v2"/></svg>
           Event Logo <span style="color:#9ca3af;font-size:11px;font-weight:400;margin-left:4px;">(optional)</span>
         </div>
-        <div class="upload-card-sub">Shown on the kiosk page header.</div>
+        <div class="upload-card-sub">Shown in the kiosk header.</div>
         <div class="upload-drop" id="logoDrop" onclick="document.getElementById('logoFile').click()">
           <input type="file" id="logoFile" accept="image/*" onchange="onFileSelected('logoFile','logoPreview','logoDrop','logoHint','logoStatus')" />
           <div id="logoHint" class="upload-hint">
@@ -187,6 +221,24 @@
           <img id="logoPreview" class="upload-preview" />
         </div>
         <div id="logoStatus" style="font-size:11px;color:#9ca3af;margin-top:7px;display:none;"></div>
+      </div>
+
+      <div class="upload-card">
+        <div class="upload-card-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="8.5 3 8.5 21"/></svg>
+          Kiosk Background <span style="color:#9ca3af;font-size:11px;font-weight:400;margin-left:4px;">(optional)</span>
+        </div>
+        <div class="upload-card-sub">JPG/PNG used as the kiosk page background.</div>
+        <div class="upload-drop" id="bgDrop" onclick="document.getElementById('bgFile').click()">
+          <input type="file" id="bgFile" accept="image/jpeg,image/jpg,image/png" onchange="onFileSelected('bgFile','bgPreview','bgDrop','bgHint','bgStatus')" />
+          <div id="bgHint" class="upload-hint">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4b5d5" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="upload-hint-text">Click to upload background</span>
+            <span class="upload-hint-sub">Full-page background photo</span>
+          </div>
+          <img id="bgPreview" class="upload-preview" />
+        </div>
+        <div id="bgStatus" style="font-size:11px;color:#9ca3af;margin-top:7px;display:none;"></div>
       </div>
     </div>
 
@@ -202,8 +254,25 @@
           <input id="pfEventName" class="form-input" placeholder="e.g. Annual Tech Summit 2025" />
         </div>
         <div class="form-group">
-          <label class="form-label">Sponsor / Organiser</label>
-          <input id="pfSponsor" class="form-input" placeholder="Optional" />
+          <label class="form-label">Sponsor</label>
+          <div class="mode-tabs">
+            <button class="mode-tab active" id="sponsorNameTab" onclick="setSponsorMode('name')">Text Name</button>
+            <button class="mode-tab" id="sponsorLogoTab" onclick="setSponsorMode('logo')">Upload Logo</button>
+          </div>
+          <div id="sponsorNameSection">
+            <input id="pfSponsor" class="form-input" placeholder="Sponsor / Organiser name (optional)" />
+          </div>
+          <div id="sponsorLogoSection" style="display:none;">
+            <div class="upload-drop" id="sponsorLogoDrop" style="min-height:80px;" onclick="document.getElementById('sponsorLogoFile').click()">
+              <input type="file" id="sponsorLogoFile" accept="image/*" onchange="onFileSelected('sponsorLogoFile','sponsorLogoPreview','sponsorLogoDrop','sponsorLogoHint','sponsorLogoStatus')" />
+              <div id="sponsorLogoHint" class="upload-hint">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4b5d5" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span class="upload-hint-text">Click to upload sponsor logo</span>
+              </div>
+              <img id="sponsorLogoPreview" style="max-width:100%;max-height:80px;object-fit:contain;display:none;padding:4px;" />
+            </div>
+            <div id="sponsorLogoStatus" style="font-size:11px;color:#9ca3af;margin-top:5px;display:none;"></div>
+          </div>
         </div>
       </div>
       <div class="form-row">
@@ -215,6 +284,69 @@
           <label class="form-label">Event Date / Time</label>
           <input id="pfDateTime" class="form-input" type="datetime-local" />
         </div>
+      </div>
+    </div>
+
+    <!-- Kiosk Design -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        3 · Kiosk Design
+      </div>
+
+      <div class="form-label" style="margin-bottom:10px;">Layout Template</div>
+      <div class="template-picker" id="templatePicker">
+        <div class="tmpl-card selected" data-template="classic" onclick="selectTemplate('classic')">
+          <div class="tmpl-preview">
+            <div class="tmpl-hdr"></div>
+            <div style="display:flex;flex:1;gap:3px;margin-top:3px;">
+              <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+                <div style="background:#c4b5d5;border-radius:4px;flex:1;"></div>
+                <div style="background:#ddd6fe;border-radius:4px;height:8px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-label">Classic</div>
+          <div class="tmpl-sub">Centered, header on top</div>
+        </div>
+        <div class="tmpl-card" data-template="side" onclick="selectTemplate('side')">
+          <div class="tmpl-preview">
+            <div class="tmpl-hdr"></div>
+            <div style="display:flex;flex:1;gap:3px;margin-top:3px;">
+              <div style="background:#c4b5d5;border-radius:4px;width:55%;"></div>
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
+                <div style="background:#ddd6fe;border-radius:3px;height:7px;"></div>
+                <div style="background:#ddd6fe;border-radius:3px;height:7px;"></div>
+                <div style="background:#6252a3;border-radius:3px;height:9px;margin-top:auto;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-label">Side Panel</div>
+          <div class="tmpl-sub">Canvas left, controls right</div>
+        </div>
+        <div class="tmpl-card" data-template="minimal" onclick="selectTemplate('minimal')">
+          <div class="tmpl-preview" style="align-items:center;justify-content:center;">
+            <div style="background:#c4b5d5;border-radius:4px;width:60%;height:75%;"></div>
+          </div>
+          <div class="tmpl-label">Minimal</div>
+          <div class="tmpl-sub">Just canvas + download</div>
+        </div>
+      </div>
+
+      <div class="form-label" style="margin-top:18px;margin-bottom:10px;">Color Palette</div>
+      <div class="palette-picker" id="palettePicker">
+        <button class="palette-swatch selected" data-palette="violet" onclick="selectPalette('violet')">
+          <span class="swatch-dot" style="background:linear-gradient(135deg,#3e256c,#7c6bc4);"></span>
+          Violet
+        </button>
+        <button class="palette-swatch" data-palette="crimson" onclick="selectPalette('crimson')">
+          <span class="swatch-dot" style="background:linear-gradient(135deg,#7a0a30,#e05285);"></span>
+          Crimson
+        </button>
+        <button class="palette-swatch" data-palette="ocean" onclick="selectPalette('ocean')">
+          <span class="swatch-dot" style="background:linear-gradient(135deg,#0a3d5e,#38b2e0);"></span>
+          Ocean
+        </button>
       </div>
     </div>
 
@@ -252,7 +384,10 @@ let pfConfigId          = null;
 let existingFrameUrl    = null;
 let existingSharingSlug = null;
 let isPublished         = false;
-let isEditing           = false; // true when user clicked "Edit Settings" on a live/draft kiosk
+let isEditing           = false;
+let selectedTemplate    = 'classic';
+let selectedPalette     = 'violet';
+let sponsorMode         = 'name'; // 'name' | 'logo'
 
 const el = id => document.getElementById(id);
 
@@ -263,6 +398,30 @@ function showAlert(msg, type = 'success') {
   a.style.display = 'block';
   a.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   setTimeout(() => a.style.display = 'none', 6000);
+}
+
+/* ── Sponsor toggle ── */
+function setSponsorMode(mode) {
+  sponsorMode = mode;
+  el('sponsorNameTab').classList.toggle('active', mode === 'name');
+  el('sponsorLogoTab').classList.toggle('active', mode === 'logo');
+  el('sponsorNameSection').style.display = mode === 'name' ? '' : 'none';
+  el('sponsorLogoSection').style.display = mode === 'logo' ? '' : 'none';
+}
+
+/* ── Template / Palette pickers ── */
+function selectTemplate(name) {
+  selectedTemplate = name;
+  document.querySelectorAll('#templatePicker .tmpl-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.template === name);
+  });
+}
+
+function selectPalette(name) {
+  selectedPalette = name;
+  document.querySelectorAll('#palettePicker .palette-swatch').forEach(s => {
+    s.classList.toggle('selected', s.dataset.palette === name);
+  });
 }
 
 /* ── Events ── */
@@ -285,12 +444,16 @@ async function onEventChange() {
   selectedEventToolId = null; pfConfigId = null;
   existingFrameUrl = null; existingSharingSlug = null;
   isPublished = false; isEditing = false;
+  selectedTemplate = 'classic'; selectedPalette = 'violet'; sponsorMode = 'name';
 
   el('setupSection').style.display = eventId ? 'block' : 'none';
   el('liveBanner').style.display   = 'none';
   el('draftBanner').style.display  = 'none';
   el('editorSection').style.display = 'block';
   el('cancelEditBtn').style.display = 'none';
+  selectTemplate('classic');
+  selectPalette('violet');
+  setSponsorMode('name');
 
   if (!eventId) return;
 
@@ -321,13 +484,29 @@ async function loadExistingSetup() {
     existingSharingSlug = d.sharingSlug;
     isPublished         = d.isPublished;
 
-    el('pfEventName').value = d.eventName   || '';
-    el('pfSponsor').value   = d.sponsorName || '';
-    el('pfVenue').value     = d.venueName   || '';
+    el('pfEventName').value = d.eventName  || '';
+    el('pfVenue').value     = d.venueName  || '';
     if (d.eventDateTime) el('pfDateTime').value = d.eventDateTime.slice(0, 16);
+
+    // Sponsor: logo takes priority over name
+    if (d.sponsorLogoUrl) {
+      setSponsorMode('logo');
+      setPreviewFromUrl('sponsorLogoPreview', 'sponsorLogoDrop', 'sponsorLogoHint', 'sponsorLogoStatus', d.sponsorLogoUrl, 'sponsor-logo');
+    } else {
+      setSponsorMode('name');
+      el('pfSponsor').value = d.sponsorName || '';
+    }
 
     if (d.frameImageUrl) setPreviewFromUrl('framePreview', 'frameDrop', 'frameHint', 'frameStatus', d.frameImageUrl, 'frame.png');
     if (d.logoImageUrl)  setPreviewFromUrl('logoPreview',  'logoDrop',  'logoHint',  'logoStatus',  d.logoImageUrl,  'logo');
+
+    // Landing page settings
+    if (d.landingPage) {
+      selectTemplate(d.landingPage.templateName || 'classic');
+      selectPalette(d.landingPage.backgroundColor || 'violet');
+      if (d.landingPage.backgroundImageUrl)
+        setPreviewFromUrl('bgPreview', 'bgDrop', 'bgHint', 'bgStatus', d.landingPage.backgroundImageUrl, 'background');
+    }
 
     if (d.isPublished && d.sharingSlug) {
       showLiveBanner(d.sharingSlug);
@@ -418,10 +597,11 @@ async function unpublish() {
     const r = await fetch(`/api/photo-frame/${pfConfigId}/landing-page`, {
       method: 'PATCH', headers: HJ,
       body: JSON.stringify({
-        templateName: 'default', backgroundColor: '#1a1a2e',
+        templateName: selectedTemplate,
+        backgroundColor: selectedPalette,
         headlineText: el('pfEventName').value.trim() || null,
-        instructionText: 'Upload your photo and download your framed picture!',
-        downloadButtonText: 'Download My Photo',
+        instructionText: null,
+        downloadButtonText: null,
         publish: false
       })
     });
@@ -450,9 +630,9 @@ async function saveAll(shouldPublish) {
     showAlert('Please upload a frame image before publishing.', 'error'); return;
   }
 
-  const saveDraftBtn  = el('saveDraftBtn');
-  const publishBtn    = el('publishBtn');
-  const spinner       = '<span class="spinner"></span>';
+  const saveDraftBtn = el('saveDraftBtn');
+  const publishBtn   = el('publishBtn');
+  const spinner      = '<span class="spinner"></span>';
 
   saveDraftBtn.disabled = publishBtn.disabled = true;
   if (shouldPublish) {
@@ -465,12 +645,13 @@ async function saveAll(shouldPublish) {
     // 1 — Save / update setup
     let configId = pfConfigId;
     {
+      const sponsorName = (sponsorMode === 'name') ? (el('pfSponsor').value.trim() || null) : null;
       const r = await fetch('/api/photo-frame/setup', {
         method: 'POST', headers: HJ,
         body: JSON.stringify({
           eventToolId:   selectedEventToolId,
           eventName,
-          sponsorName:   el('pfSponsor').value.trim() || null,
+          sponsorName,
           venueName:     el('pfVenue').value.trim()   || null,
           eventDateTime: el('pfDateTime').value       || null
         })
@@ -501,15 +682,31 @@ async function saveAll(shouldPublish) {
       await fetch(`/api/photo-frame/${configId}/logo-image`, { method: 'POST', headers: H, body: fd });
     }
 
-    // 4 — Save landing page settings (always, controls publish flag)
+    // 4 — Upload sponsor logo if in logo mode and new file selected
+    if (sponsorMode === 'logo') {
+      const sponsorLogoFile = el('sponsorLogoFile').files[0];
+      if (sponsorLogoFile) {
+        const fd = new FormData(); fd.append('image', sponsorLogoFile);
+        await fetch(`/api/photo-frame/${configId}/sponsor-logo`, { method: 'POST', headers: H, body: fd });
+      }
+    }
+
+    // 5 — Upload kiosk background if new file selected
+    const bgFile = el('bgFile').files[0];
+    if (bgFile) {
+      const fd = new FormData(); fd.append('image', bgFile);
+      await fetch(`/api/photo-frame/${configId}/landing-page/background-image`, { method: 'POST', headers: H, body: fd });
+    }
+
+    // 6 — Save landing page settings
     const r = await fetch(`/api/photo-frame/${configId}/landing-page`, {
       method: 'PATCH', headers: HJ,
       body: JSON.stringify({
-        templateName:       'default',
-        backgroundColor:    '#1a1a2e',
+        templateName:       selectedTemplate,
+        backgroundColor:    selectedPalette,
         headlineText:       eventName,
-        instructionText:    'Upload your photo and download your framed picture!',
-        downloadButtonText: 'Download My Photo',
+        instructionText:    null,
+        downloadButtonText: null,
         publish:            shouldPublish
       })
     });

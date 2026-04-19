@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmarTools.Modules.Dashboard")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5187b0b9cd8aea7fad8e40f2b6a67c34dde0e0f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb30dd98fb8960eca7d902da25130f9ea580b24f")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmarTools.Modules.Dashboard")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmarTools.Modules.Dashboard")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

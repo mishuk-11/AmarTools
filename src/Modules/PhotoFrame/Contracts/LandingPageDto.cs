@@ -12,6 +12,7 @@ public sealed record LandingPageDto(
     // Event details shown on the landing page
     string    EventName,
     string?   SponsorName,
+    string?   SponsorLogoUrl,
     string?   VenueName,
     DateTime? EventDateTime,
     string?   LogoUrl,

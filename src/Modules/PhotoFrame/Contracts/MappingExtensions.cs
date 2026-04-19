@@ -18,6 +18,8 @@ internal static class MappingExtensions
                 ? storage.GetPublicUrl(config.FrameImagePath) : null,
             LogoImageUrl: config.LogoImagePath is not null
                 ? storage.GetPublicUrl(config.LogoImagePath) : null,
+            SponsorLogoUrl: config.SponsorLogoPath is not null
+                ? storage.GetPublicUrl(config.SponsorLogoPath) : null,
             config.SharingSlug,
             SharingUrl: $"/api/photo-frame/public/{config.SharingSlug}",
             config.IsPublished,
@@ -36,6 +38,8 @@ internal static class MappingExtensions
             lp.DownloadButtonText,
             config.EventName,
             config.SponsorName,
+            SponsorLogoUrl: config.SponsorLogoPath is not null
+                ? storage.GetPublicUrl(config.SponsorLogoPath) : null,
             config.VenueName,
             config.EventDateTime,
             LogoUrl: config.LogoImagePath is not null

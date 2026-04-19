@@ -24,18 +24,15 @@ public sealed class EventsController : ApiControllerBase
 {
     private readonly ISender             _sender;
     private readonly AppDbContext        _db;
-    private readonly IUnitOfWork         _uow;
     private readonly ICurrentUserService _currentUser;
 
     public EventsController(
         ISender sender,
         AppDbContext db,
-        IUnitOfWork uow,
         ICurrentUserService currentUser)
     {
         _sender      = sender;
         _db          = db;
-        _uow         = uow;
         _currentUser = currentUser;
     }
 
@@ -112,7 +109,7 @@ public sealed class EventsController : ApiControllerBase
 
         ev.UpdateDetails(request.Name, request.Description, request.EventDate, request.Venue);
 
-        try { await _uow.SaveChangesAsync(ct); }
+        try { await _db.SaveChangesAsync(ct); }
         catch (DbUpdateException ex)
         {
             var msg = ex.Message;
@@ -178,7 +175,7 @@ public sealed class EventsController : ApiControllerBase
         // Add directly to DbSet to avoid private-backing-field change-tracking issues
         var newTool = EventTool.Create(eventId, tool);
         _db.EventTools.Add(newTool);
-        await _uow.SaveChangesAsync(ct);
+        await _db.SaveChangesAsync(ct);
         return base.Ok(newTool.Id);
     }
 }

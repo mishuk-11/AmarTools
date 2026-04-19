@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rfoFIDtfF1U=",
+  "dgSpecHash": "EfN5ytTXfpM=",
   "success": true,
-  "projectFilePath": "D:\\AmarTools\\Pull2\\AmarTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj",
+  "projectFilePath": "D:\\AmarTools\\Pull\\AmarTools\\src\\Modules\\PhotoFrame\\AmarTools.Modules.PhotoFrame.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\InZu\\.nuget\\packages\\mediatr\\12.5.0\\mediatr.12.5.0.nupkg.sha512",
     "C:\\Users\\InZu\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",

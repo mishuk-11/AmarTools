@@ -5,6 +5,7 @@ using AmarTools.Modules.PhotoFrame.Commands.UpdateLandingPage;
 using AmarTools.Modules.PhotoFrame.Commands.UploadFrameImage;
 using AmarTools.Modules.PhotoFrame.Commands.UploadLandingBackgroundImage;
 using AmarTools.Modules.PhotoFrame.Commands.UploadLogoImage;
+using AmarTools.Modules.PhotoFrame.Commands.UploadSponsorLogoImage;
 using AmarTools.Modules.PhotoFrame.Contracts;
 using AmarTools.Modules.PhotoFrame.Queries.GetLandingPage;
 using AmarTools.Modules.PhotoFrame.Queries.GetPhotoFrameSetup;
@@ -126,6 +127,41 @@ public sealed class PhotoFrameController : ApiControllerBase
         await using var imageStream = request.Image.OpenReadStream();
 
         var command = new UploadLogoImageCommand(
+            photoFrameConfigId,
+            imageStream,
+            request.Image.FileName,
+            request.Image.ContentType);
+
+        var result = await _sender.Send(command, ct);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Uploads or replaces the sponsor logo image.
+    /// </summary>
+    [Authorize]
+    [HttpPost("{photoFrameConfigId:guid}/sponsor-logo")]
+    [ProducesResponseType(typeof(PhotoFrameSetupDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(422)]
+    public async Task<IActionResult> UploadSponsorLogo(
+        Guid photoFrameConfigId,
+        [FromForm] UploadFileRequest request,
+        CancellationToken ct)
+    {
+        if (request.Image is null || request.Image.Length == 0)
+            return UnprocessableEntity(new ProblemDetails
+            {
+                Title = "PhotoFrame.ImageRequired",
+                Detail = "Please provide a sponsor logo image file."
+            });
+
+        await using var imageStream = request.Image.OpenReadStream();
+
+        var command = new UploadSponsorLogoImageCommand(
             photoFrameConfigId,
             imageStream,
             request.Image.FileName,

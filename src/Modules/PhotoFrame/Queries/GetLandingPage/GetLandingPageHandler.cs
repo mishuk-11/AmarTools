@@ -1,5 +1,6 @@
 using AmarTools.BuildingBlocks.Common;
 using AmarTools.BuildingBlocks.Interfaces;
+using AmarTools.Domain.Enums;
 using AmarTools.Infrastructure.Persistence;
 using AmarTools.Modules.PhotoFrame.Contracts;
 using MediatR;
@@ -29,11 +30,16 @@ internal sealed class GetLandingPageHandler
         var config = await _db.PhotoFrameConfigs
             .AsNoTracking()
             .Include(c => c.LandingPage)
+            .Include(c => c.EventTool).ThenInclude(t => t.Event)
             .FirstOrDefaultAsync(c => c.SharingSlug == query.SharingSlug, ct);
 
         if (config is null || !config.IsPublished)
             return Error.NotFound("PhotoFrame.NotFound",
                 "This photo frame event could not be found.");
+
+        if (config.EventTool.Event.Status != EventStatus.Active)
+            return Error.Failure("PhotoFrame.EventPaused",
+                "This event's kiosk is currently paused.");
 
         if (config.LandingPage is null)
             return Error.Failure("PhotoFrame.NotConfigured",

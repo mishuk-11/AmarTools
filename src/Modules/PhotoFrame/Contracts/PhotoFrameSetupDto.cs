@@ -10,6 +10,7 @@ public sealed record PhotoFrameSetupDto(
     DateTime? EventDateTime,
     string?   FrameImageUrl,
     string?   LogoImageUrl,
+    string?   SponsorLogoUrl,
     string    SharingSlug,
     string    SharingUrl,
     bool      IsPublished,

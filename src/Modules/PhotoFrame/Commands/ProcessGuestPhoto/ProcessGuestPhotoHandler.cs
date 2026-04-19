@@ -1,6 +1,7 @@
 using AmarTools.BuildingBlocks.Common;
 using AmarTools.BuildingBlocks.Interfaces;
 using AmarTools.Domain.Entities;
+using AmarTools.Domain.Enums;
 using AmarTools.Infrastructure.Persistence;
 using AmarTools.Modules.PhotoFrame.Contracts;
 using AmarTools.Modules.PhotoFrame.Services;
@@ -36,11 +37,16 @@ internal sealed class ProcessGuestPhotoHandler
     {
         // ── 1. Resolve frame config by public slug ────────────────────────────
         var config = await _db.PhotoFrameConfigs
+            .Include(c => c.EventTool).ThenInclude(t => t.Event)
             .FirstOrDefaultAsync(c => c.SharingSlug == command.SharingSlug, ct);
 
         if (config is null || !config.IsPublished)
             return Error.NotFound("PhotoFrame.NotFound",
                 "This photo frame event could not be found or is not currently active.");
+
+        if (config.EventTool.Event.Status != EventStatus.Active)
+            return Error.Failure("PhotoFrame.EventPaused",
+                "This event's kiosk is currently paused.");
 
         if (string.IsNullOrWhiteSpace(config.FrameImagePath))
             return Error.Failure("PhotoFrame.NoFrame",
