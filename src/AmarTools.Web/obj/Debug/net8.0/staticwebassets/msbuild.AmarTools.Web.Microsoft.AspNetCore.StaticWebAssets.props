@@ -160,6 +160,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\frames\ba0be3b5e81745f7aaa63b28e18b99c2_Artboard 1@4x~1.png))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\frames\fbc2f1a52abd420d9e9b20b95b81cff0_Artboard 1@4x~1.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>AmarTools.Web</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AmarTools.Web</BasePath>
+      <RelativePath>uploads/frames/fbc2f1a52abd420d9e9b20b95b81cff0_Artboard 1@4x~1.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\frames\fbc2f1a52abd420d9e9b20b95b81cff0_Artboard 1@4x~1.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\landing-backgrounds\74cad20257274563ae827b4c9cf818a5_BG.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>AmarTools.Web</SourceId>

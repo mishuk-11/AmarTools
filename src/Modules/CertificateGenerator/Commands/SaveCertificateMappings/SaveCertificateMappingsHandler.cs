@@ -52,24 +52,32 @@ internal sealed class SaveCertificateMappingsHandler
             return Error.Validation("Certificates.MappingsRequired",
                 "At least one field mapping must be provided.");
 
-        _db.CertificateFieldMappings.RemoveRange(config.FieldMappings);
+        // Remove existing mappings and save them for deletion
+        var existing = config.FieldMappings.ToList();
+        _db.CertificateFieldMappings.RemoveRange(existing);
 
-        var newMappings = command.Mappings.Select(m => CertificateFieldMapping.Create(
-            config.Id,
-            m.FieldKey,
-            m.SourceColumn,
-            m.FieldType,
-            m.PositionX,
-            m.PositionY,
-            m.Width,
-            m.Height,
-            m.FontSize,
-            m.FontColor));
+        // Add new mappings directly to DbSet so EF tracks them regardless of navigation state
+        foreach (var m in command.Mappings)
+        {
+            _db.CertificateFieldMappings.Add(CertificateFieldMapping.Create(
+                config.Id,
+                m.FieldKey,
+                m.SourceColumn,
+                m.FieldType,
+                m.PositionX,
+                m.PositionY,
+                m.Width,
+                m.Height,
+                m.FontSize,
+                m.FontColor));
+        }
 
-        foreach (var mapping in newMappings)
-            config.FieldMappings.Add(mapping);
+        config.SetOutputFileNamePattern(command.OutputFileNamePattern);
 
         await _uow.SaveChangesAsync(ct);
+
+        // Reload field mappings so the DTO reflects the newly inserted rows
+        await _db.Entry(config).Collection(c => c.FieldMappings).LoadAsync(ct);
         return config.ToSetupDto(_storage);
     }
 }

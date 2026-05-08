@@ -24,33 +24,25 @@ public sealed class CertificateTemplateConfig : AuditableEntity
 
     public string? RecipientDatasetFileName { get; private set; }
 
-    public string? EmailSubject { get; private set; }
-
-    public string? EmailBody { get; private set; }
+    public string? OutputFileNamePattern { get; private set; }
 
     public ICollection<CertificateFieldMapping> FieldMappings { get; private set; } =
         new List<CertificateFieldMapping>();
 
     private CertificateTemplateConfig() { }
 
-    public static CertificateTemplateConfig Create(Guid eventToolId, string templateName)
+    public static CertificateTemplateConfig Create(Guid eventToolId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(templateName);
-
         return new CertificateTemplateConfig
         {
             EventToolId = eventToolId,
-            TemplateName = templateName.Trim()
+            TemplateName = "Certificate"
         };
     }
 
-    public void UpdateMetadata(string templateName, string? emailSubject, string? emailBody)
+    public void SetOutputFileNamePattern(string? pattern)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(templateName);
-
-        TemplateName = templateName.Trim();
-        EmailSubject = emailSubject?.Trim();
-        EmailBody = emailBody?.Trim();
+        OutputFileNamePattern = string.IsNullOrWhiteSpace(pattern) ? null : pattern.Trim();
     }
 
     public void SetBaseTemplate(string storagePath, string fileName, string fileType)

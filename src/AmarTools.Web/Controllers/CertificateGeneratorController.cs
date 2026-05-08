@@ -1,9 +1,10 @@
 using AmarTools.Modules.CertificateGenerator.Commands.SaveCertificateMappings;
 using AmarTools.Modules.CertificateGenerator.Commands.GenerateCertificateBatch;
-using AmarTools.Modules.CertificateGenerator.Commands.SetupCertificateTemplate;
+using AmarTools.Modules.CertificateGenerator.Commands.ProcessCertificateBatch;
 using AmarTools.Modules.CertificateGenerator.Commands.UploadBaseTemplate;
 using AmarTools.Modules.CertificateGenerator.Commands.UploadRecipientDataset;
 using AmarTools.Modules.CertificateGenerator.Contracts;
+using AmarTools.Modules.CertificateGenerator.Queries.DownloadCertificateBatch;
 using AmarTools.Modules.CertificateGenerator.Queries.GetCertificateTemplateSetup;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,27 +30,6 @@ public sealed class CertificateGeneratorController : ApiControllerBase
     {
         var result = await _sender.Send(new GetCertificateTemplateSetupQuery(eventToolId), ct);
         return Ok(result);
-    }
-
-    [HttpPost("setup")]
-    [ProducesResponseType(typeof(CertificateTemplateSetupDto), 201)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(422)]
-    public async Task<IActionResult> SetupTemplate(
-        [FromBody] SetupCertificateTemplateRequest request,
-        CancellationToken ct)
-    {
-        var result = await _sender.Send(
-            new SetupCertificateTemplateCommand(
-                request.EventToolId,
-                request.TemplateName,
-                request.EmailSubject,
-                request.EmailBody),
-            ct);
-
-        return Created(result);
     }
 
     [HttpPost("{certificateTemplateConfigId:guid}/base-template")]
@@ -97,7 +77,8 @@ public sealed class CertificateGeneratorController : ApiControllerBase
         var result = await _sender.Send(
             new SaveCertificateMappingsCommand(
                 certificateTemplateConfigId,
-                request.Mappings),
+                request.Mappings,
+                request.OutputFileNamePattern),
             ct);
 
         return Ok(result);
@@ -152,21 +133,57 @@ public sealed class CertificateGeneratorController : ApiControllerBase
 
         return Ok(result);
     }
-}
 
-public sealed record SetupCertificateTemplateRequest(
-    Guid EventToolId,
-    string TemplateName,
-    string? EmailSubject,
-    string? EmailBody
-);
+    [HttpPost("{certificateTemplateConfigId:guid}/batches/{batchId:guid}/process")]
+    [ProducesResponseType(typeof(CertificateGenerationBatchDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(409)]
+    [ProducesResponseType(422)]
+    public async Task<IActionResult> ProcessBatch(
+        Guid certificateTemplateConfigId,
+        Guid batchId,
+        CancellationToken ct)
+    {
+        var result = await _sender.Send(
+            new ProcessCertificateBatchCommand(certificateTemplateConfigId, batchId),
+            ct);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{certificateTemplateConfigId:guid}/batches/{batchId:guid}/download")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(422)]
+    public async Task<IActionResult> DownloadBatch(
+        Guid certificateTemplateConfigId,
+        Guid batchId,
+        CancellationToken ct)
+    {
+        var result = await _sender.Send(
+            new DownloadCertificateBatchQuery(certificateTemplateConfigId, batchId),
+            ct);
+
+        if (result.IsFailure)
+            return MapError(result.Error);
+
+        var dto = result.Value;
+        return File(dto.FileStream, dto.ContentType, dto.FileName);
+    }
+}
 
 public sealed record UploadCertificateTemplateRequest(IFormFile Template);
 
 public sealed record UploadRecipientDatasetRequest(IFormFile Dataset);
 
 public sealed record SaveCertificateMappingsRequest(
-    IReadOnlyCollection<CertificateFieldMappingInputDto> Mappings
+    IReadOnlyCollection<CertificateFieldMappingInputDto> Mappings,
+    string? OutputFileNamePattern = null
 );
 
 public sealed record GenerateCertificateBatchRequest(string OutputFormat = "pdf");

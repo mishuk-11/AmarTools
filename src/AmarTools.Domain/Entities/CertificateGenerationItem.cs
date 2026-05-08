@@ -45,4 +45,7 @@ public sealed class CertificateGenerationItem : AuditableEntity
             Status = "pending"
         };
     }
+
+    public void MarkCompleted() => Status = "completed";
+    public void MarkFailed() => Status = "failed";
 }

@@ -6,5 +6,6 @@ namespace AmarTools.Modules.CertificateGenerator.Commands.SaveCertificateMapping
 
 public sealed record SaveCertificateMappingsCommand(
     Guid CertificateTemplateConfigId,
-    IReadOnlyCollection<CertificateFieldMappingInputDto> Mappings
+    IReadOnlyCollection<CertificateFieldMappingInputDto> Mappings,
+    string? OutputFileNamePattern = null
 ) : IRequest<Result<CertificateTemplateSetupDto>>;

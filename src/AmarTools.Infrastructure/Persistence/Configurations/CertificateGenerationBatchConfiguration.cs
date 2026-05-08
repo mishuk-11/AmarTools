@@ -17,6 +17,7 @@ internal sealed class CertificateGenerationBatchConfiguration : IEntityTypeConfi
         builder.Property(b => b.TotalRecipients).IsRequired();
         builder.Property(b => b.CompletedRecipients).IsRequired();
         builder.Property(b => b.FailedRecipients).IsRequired();
+        builder.Property(b => b.OutputFilePath).HasMaxLength(1000);
 
         builder.Property(b => b.CreatedAt).IsRequired();
         builder.Property(b => b.UpdatedAt);

@@ -43,3 +43,39 @@ D:\AmarTools\Pull\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTo
 D:\AmarTools\Pull\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\refint\AmarTools.BuildingBlocks.dll
 D:\AmarTools\Pull\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.pdb
 D:\AmarTools\Pull\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\ref\AmarTools.BuildingBlocks.dll
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.deps.json
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.dll
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfoInputs.cache
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfo.cs
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.csproj.CoreCompileInputs.cache
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.sourcelink.json
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.dll
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\refint\AmarTools.BuildingBlocks.dll
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+D:\AmarTools\Pull FInal\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\ref\AmarTools.BuildingBlocks.dll
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.deps.json
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.dll
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfoInputs.cache
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfo.cs
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.csproj.CoreCompileInputs.cache
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.sourcelink.json
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.dll
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\refint\AmarTools.BuildingBlocks.dll
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+C:\Users\InZu\Downloads\Cherry\New folder\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\ref\AmarTools.BuildingBlocks.dll
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.deps.json
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.dll
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\bin\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfoInputs.cache
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.AssemblyInfo.cs
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.csproj.CoreCompileInputs.cache
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.sourcelink.json
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.dll
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\refint\AmarTools.BuildingBlocks.dll
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\AmarTools.BuildingBlocks.pdb
+D:\SEL\Pull 2\AmarTools\src\AmarTools.BuildingBlocks\obj\Debug\net8.0\ref\AmarTools.BuildingBlocks.dll

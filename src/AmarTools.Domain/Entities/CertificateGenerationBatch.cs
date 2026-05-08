@@ -22,6 +22,8 @@ public sealed class CertificateGenerationBatch : AuditableEntity
 
     public int FailedRecipients { get; private set; }
 
+    public string? OutputFilePath { get; private set; }
+
     public ICollection<CertificateGenerationItem> Items { get; private set; } =
         new List<CertificateGenerationItem>();
 
@@ -42,4 +44,18 @@ public sealed class CertificateGenerationBatch : AuditableEntity
             Status = "pending"
         };
     }
+
+    public void MarkProcessing() => Status = "processing";
+
+    public void MarkCompleted(string outputFilePath, int completed)
+    {
+        Status = "completed";
+        OutputFilePath = outputFilePath;
+        CompletedRecipients = completed;
+    }
+
+    public void MarkFailed() => Status = "failed";
+
+    public void IncrementCompleted() => CompletedRecipients++;
+    public void IncrementFailed() => FailedRecipients++;
 }

@@ -8,7 +8,7 @@ public sealed record CertificateTemplateSetupDto(
     string? BaseTemplateFileName,
     string? BaseTemplateFileType,
     string? RecipientDatasetFileName,
-    string? EmailSubject,
-    string? EmailBody,
-    IReadOnlyList<CertificateFieldMappingDto> FieldMappings
+    IReadOnlyList<CertificateFieldMappingDto> FieldMappings,
+    string? OutputFileNamePattern = null,
+    IReadOnlyList<string>? DetectedPlaceholders = null
 );

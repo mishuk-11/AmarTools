@@ -1,12 +1,9 @@
+using AmarTools.Modules.CertificateGenerator.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using AmarTools.Modules.CertificateGenerator.Services;
 
 namespace AmarTools.Modules.CertificateGenerator;
 
-/// <summary>
-/// Registers all Certificate Generator module services.
-/// </summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddCertificateGeneratorModule(this IServiceCollection services)
@@ -15,6 +12,15 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         services.AddScoped<ICertificateDatasetParser, CsvCertificateDatasetParser>();
+        services.AddScoped<IPptxCertificateRenderer, PptxCertificateRenderer>();
+        services.AddScoped<IPptxPlaceholderExtractor, PptxPlaceholderExtractor>();
+
+        // Prefer LibreOffice (best fidelity) when installed; fall back to the built-in OpenXML renderer
+        var libreOfficeConverter = new LibreOfficePdfConverter();
+        services.AddSingleton<IPdfConverter>(
+            libreOfficeConverter.IsAvailable
+                ? (IPdfConverter)libreOfficeConverter
+                : new OpenXmlPdfConverter());
 
         return services;
     }

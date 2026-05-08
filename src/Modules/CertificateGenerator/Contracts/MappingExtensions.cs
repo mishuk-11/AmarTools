@@ -7,7 +7,8 @@ internal static class MappingExtensions
 {
     internal static CertificateTemplateSetupDto ToSetupDto(
         this CertificateTemplateConfig config,
-        IFileStorageService storage) =>
+        IFileStorageService storage,
+        IReadOnlyList<string>? detectedPlaceholders = null) =>
         new(
             config.Id,
             config.EventToolId,
@@ -18,12 +19,12 @@ internal static class MappingExtensions
             config.BaseTemplateFileName,
             config.BaseTemplateFileType,
             config.RecipientDatasetFileName,
-            config.EmailSubject,
-            config.EmailBody,
             config.FieldMappings
                 .OrderBy(m => m.CreatedAt)
                 .Select(m => m.ToDto())
-                .ToList()
+                .ToList(),
+            config.OutputFileNamePattern,
+            detectedPlaceholders
         );
 
     internal static CertificateFieldMappingDto ToDto(this CertificateFieldMapping mapping) =>
@@ -40,17 +41,24 @@ internal static class MappingExtensions
             mapping.FontColor
         );
 
-    internal static CertificateGenerationBatchDto ToDto(this CertificateGenerationBatch batch) =>
+    internal static CertificateGenerationBatchDto ToDto(
+        this CertificateGenerationBatch batch,
+        IFileStorageService? storage = null) =>
         new(
             batch.Id,
             batch.CertificateTemplateConfigId,
             batch.Status,
             batch.OutputFormat,
             batch.TotalRecipients,
+            batch.CompletedRecipients,
+            batch.FailedRecipients,
             batch.Items
                 .OrderBy(i => i.SequenceNumber)
                 .Select(i => i.ToDto())
-                .ToList()
+                .ToList(),
+            OutputFileUrl: batch.OutputFilePath is not null && storage is not null
+                ? storage.GetPublicUrl(batch.OutputFilePath)
+                : null
         );
 
     internal static CertificateGenerationItemDto ToDto(this CertificateGenerationItem item) =>

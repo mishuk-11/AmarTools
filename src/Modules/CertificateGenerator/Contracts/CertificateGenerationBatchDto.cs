@@ -6,5 +6,8 @@ public sealed record CertificateGenerationBatchDto(
     string Status,
     string OutputFormat,
     int TotalRecipients,
-    IReadOnlyList<CertificateGenerationItemDto> Items
+    int CompletedRecipients,
+    int FailedRecipients,
+    IReadOnlyList<CertificateGenerationItemDto> Items,
+    string? OutputFileUrl = null
 );

@@ -1,7 +1,10 @@
 using AmarTools.BuildingBlocks.Common;
 using AmarTools.BuildingBlocks.Interfaces;
+using AmarTools.Domain.Entities;
+using AmarTools.Domain.Enums;
 using AmarTools.Infrastructure.Persistence;
 using AmarTools.Modules.CertificateGenerator.Contracts;
+using AmarTools.Modules.CertificateGenerator.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,15 +16,21 @@ internal sealed class GetCertificateTemplateSetupHandler
     private readonly AppDbContext _db;
     private readonly ICurrentUserService _currentUser;
     private readonly IFileStorageService _storage;
+    private readonly IPptxPlaceholderExtractor _placeholderExtractor;
+    private readonly IUnitOfWork _uow;
 
     public GetCertificateTemplateSetupHandler(
         AppDbContext db,
         ICurrentUserService currentUser,
-        IFileStorageService storage)
+        IFileStorageService storage,
+        IPptxPlaceholderExtractor placeholderExtractor,
+        IUnitOfWork uow)
     {
         _db = db;
         _currentUser = currentUser;
         _storage = storage;
+        _placeholderExtractor = placeholderExtractor;
+        _uow = uow;
     }
 
     public async Task<Result<CertificateTemplateSetupDto>> Handle(
@@ -33,19 +42,42 @@ internal sealed class GetCertificateTemplateSetupHandler
 
         var userId = _currentUser.UserId.Value;
 
+        var eventTool = await _db.EventTools
+            .Include(t => t.Event)
+            .FirstOrDefaultAsync(t => t.Id == query.EventToolId, ct);
+
+        if (eventTool is null)
+            return Error.NotFound("EventTool.NotFound", "Event tool not found.");
+
+        if (eventTool.Event.OwnerId != userId)
+            return Error.Forbidden("Certificates.Forbidden", "You do not own this event.");
+
+        if (eventTool.ToolType != ToolType.CertificateGenerator)
+            return Error.Validation("EventTool.WrongType", "This tool is not a CertificateGenerator.");
+
         var config = await _db.CertificateTemplateConfigs
-            .AsNoTracking()
-            .Include(c => c.EventTool).ThenInclude(t => t.Event)
             .Include(c => c.FieldMappings)
             .FirstOrDefaultAsync(c => c.EventToolId == query.EventToolId, ct);
 
         if (config is null)
-            return Error.NotFound("Certificates.NotFound",
-                "No certificate template config found for this event tool.");
+        {
+            config = CertificateTemplateConfig.Create(query.EventToolId);
+            _db.CertificateTemplateConfigs.Add(config);
+            await _uow.SaveChangesAsync(ct);
+        }
 
-        if (config.EventTool.Event.OwnerId != userId)
-            return Error.Forbidden("Certificates.Forbidden", "You do not own this certificate setup.");
+        IReadOnlyList<string>? detectedPlaceholders = null;
+        if (!string.IsNullOrWhiteSpace(config.BaseTemplatePath) &&
+            string.Equals(config.BaseTemplateFileType, "pptx", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                await using var templateStream = await _storage.OpenReadAsync(config.BaseTemplatePath, ct);
+                detectedPlaceholders = _placeholderExtractor.Extract(templateStream);
+            }
+            catch { }
+        }
 
-        return config.ToSetupDto(_storage);
+        return config.ToSetupDto(_storage, detectedPlaceholders);
     }
 }

@@ -2,6 +2,7 @@ using AmarTools.BuildingBlocks.Common;
 using AmarTools.BuildingBlocks.Interfaces;
 using AmarTools.Infrastructure.Persistence;
 using AmarTools.Modules.CertificateGenerator.Contracts;
+using AmarTools.Modules.CertificateGenerator.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,23 +11,26 @@ namespace AmarTools.Modules.CertificateGenerator.Commands.UploadBaseTemplate;
 internal sealed class UploadBaseTemplateHandler
     : IRequestHandler<UploadBaseTemplateCommand, Result<CertificateTemplateSetupDto>>
 {
-    private static readonly string[] AllowedExtensions = [".pdf", ".png", ".jpg", ".jpeg", ".eps"];
+    private static readonly string[] AllowedExtensions = [".pptx", ".pdf", ".png", ".jpg", ".jpeg", ".eps"];
 
     private readonly AppDbContext _db;
     private readonly ICurrentUserService _currentUser;
     private readonly IUnitOfWork _uow;
     private readonly IFileStorageService _storage;
+    private readonly IPptxPlaceholderExtractor _placeholderExtractor;
 
     public UploadBaseTemplateHandler(
         AppDbContext db,
         ICurrentUserService currentUser,
         IUnitOfWork uow,
-        IFileStorageService storage)
+        IFileStorageService storage,
+        IPptxPlaceholderExtractor placeholderExtractor)
     {
         _db = db;
         _currentUser = currentUser;
         _uow = uow;
         _storage = storage;
+        _placeholderExtractor = placeholderExtractor;
     }
 
     public async Task<Result<CertificateTemplateSetupDto>> Handle(
@@ -41,7 +45,7 @@ internal sealed class UploadBaseTemplateHandler
 
         if (string.IsNullOrWhiteSpace(extension) || !AllowedExtensions.Contains(extension))
             return Error.Validation("Certificates.InvalidTemplateFile",
-                "Only PDF, PNG, JPG, and EPS files are supported as base certificate templates.");
+                "Only PPTX, PDF, PNG, JPG, and EPS files are supported as base certificate templates.");
 
         var config = await _db.CertificateTemplateConfigs
             .Include(c => c.EventTool).ThenInclude(t => t.Event)
@@ -57,6 +61,14 @@ internal sealed class UploadBaseTemplateHandler
         if (!string.IsNullOrWhiteSpace(config.BaseTemplatePath))
             await _storage.DeleteAsync(config.BaseTemplatePath, ct);
 
+        // Extract placeholders before the stream is consumed by SaveAsync
+        IReadOnlyList<string>? detectedPlaceholders = null;
+        if (extension == ".pptx")
+        {
+            command.TemplateStream.Position = 0;
+            detectedPlaceholders = _placeholderExtractor.Extract(command.TemplateStream);
+        }
+
         command.TemplateStream.Position = 0;
         var storagePath = await _storage.SaveAsync(
             command.TemplateStream,
@@ -67,6 +79,6 @@ internal sealed class UploadBaseTemplateHandler
         config.SetBaseTemplate(storagePath, command.FileName, extension.TrimStart('.'));
 
         await _uow.SaveChangesAsync(ct);
-        return config.ToSetupDto(_storage);
+        return config.ToSetupDto(_storage, detectedPlaceholders);
     }
 }

@@ -18,8 +18,7 @@ internal sealed class CertificateTemplateConfigConfiguration : IEntityTypeConfig
         builder.Property(c => c.BaseTemplateFileType).HasMaxLength(50);
         builder.Property(c => c.RecipientDatasetPath).HasMaxLength(1000);
         builder.Property(c => c.RecipientDatasetFileName).HasMaxLength(255);
-        builder.Property(c => c.EmailSubject).HasMaxLength(300);
-        builder.Property(c => c.EmailBody).HasMaxLength(4000);
+        builder.Property(c => c.OutputFileNamePattern).HasMaxLength(300);
 
         builder.Property(c => c.CreatedAt).IsRequired();
         builder.Property(c => c.UpdatedAt);

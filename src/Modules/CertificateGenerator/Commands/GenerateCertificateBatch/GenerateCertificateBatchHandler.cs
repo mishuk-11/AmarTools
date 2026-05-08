@@ -87,9 +87,13 @@ internal sealed class GenerateCertificateBatchHandler
             return Error.Validation("Certificates.EmptyDatasetRows",
                 "The uploaded dataset does not contain any recipient rows.");
 
+        if (parsed.Rows.Count > 2000)
+            return Error.Validation("Certificates.TooManyRecipients",
+                "A single batch supports up to 2,000 recipients. Split your dataset into smaller files.");
+
         var batch = CertificateGenerationBatch.Create(
             config.Id,
-            string.IsNullOrWhiteSpace(command.OutputFormat) ? "pdf" : command.OutputFormat,
+            string.IsNullOrWhiteSpace(command.OutputFormat) ? "pptx" : command.OutputFormat,
             parsed.Rows.Count);
 
         _db.CertificateGenerationBatches.Add(batch);
@@ -104,7 +108,8 @@ internal sealed class GenerateCertificateBatchHandler
             var recipientEmail = ResolveRecipientEmail(row);
             var payloadJson = JsonSerializer.Serialize(row);
 
-            batch.Items.Add(CertificateGenerationItem.Create(
+            // Explicitly add to DbSet so EF tracks every item regardless of navigation fixup
+            _db.CertificateGenerationItems.Add(CertificateGenerationItem.Create(
                 batch.Id,
                 i + 1,
                 recipientName,

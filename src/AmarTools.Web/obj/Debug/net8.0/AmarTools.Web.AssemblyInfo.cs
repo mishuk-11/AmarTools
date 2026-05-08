@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmarTools.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb30dd98fb8960eca7d902da25130f9ea580b24f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a5b18c293c7872e452febd462fa4339ca21dc3c")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmarTools.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmarTools.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

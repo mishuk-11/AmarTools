@@ -40,7 +40,7 @@ public abstract class ApiControllerBase : ControllerBase
 
     // ── Error mapping ─────────────────────────────────────────────────────────
 
-    private ObjectResult MapError(Error error) => error.Type switch
+    protected ObjectResult MapError(Error error) => error.Type switch
     {
         ErrorType.NotFound     => NotFound(ToProblem(error)),
         ErrorType.Forbidden    => StatusCode(403, ToProblem(error)),

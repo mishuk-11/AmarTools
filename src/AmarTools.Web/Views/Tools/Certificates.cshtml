@@ -14,38 +14,54 @@
   .form-label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px;}
   .form-input{width:100%;padding:10px 13px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;}
   .form-input:focus{outline:none;border-color:#6252a3;box-shadow:0 0 0 3px rgba(98,82,163,.1);background:#fff;}
-  .form-textarea{width:100%;padding:10px 13px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;resize:vertical;min-height:80px;}
-  .form-textarea:focus{outline:none;border-color:#6252a3;background:#fff;}
   .btn{padding:9px 18px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity .15s;}
-  .btn:hover{opacity:.88;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn:not(:disabled):hover{opacity:.88;}
   .btn-primary{background:linear-gradient(135deg,#3e256c,#6252a3);color:#fff;}
   .btn-ghost{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;}
   .btn-green{background:linear-gradient(135deg,#166534,#16a34a);color:#fff;}
-  .btn-red{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
+  .btn-download{background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;}
   .select-input{width:100%;padding:10px 13px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;background:#fafafa;box-sizing:border-box;}
   .select-input:focus{outline:none;border-color:#6252a3;}
-  .upload-box{border:2px dashed #e5e7eb;border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:border .15s;}
+  .upload-box{border:2px dashed #e5e7eb;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border .15s;}
   .upload-box:hover{border-color:#6252a3;}
   .upload-box input{display:none;}
-  .upload-label{font-size:13px;color:#6b7280;cursor:pointer;}
+  .upload-label{font-size:13px;color:#6b7280;cursor:pointer;margin-top:6px;display:block;}
   .alert{padding:11px 14px;border-radius:9px;font-size:13px;margin-bottom:14px;display:none;}
   .alert-success{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}
   .alert-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}
-  .status-banner{border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-  .banner-saved{background:#f0fdf4;border:1px solid #bbf7d0;}
-  .banner-text{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
-  .banner-saved .banner-text{color:#166534;}
-  .banner-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .mapping-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f3f4f6;}
+  .mapping-row:last-child{border-bottom:none;}
+  .placeholder-tag{font-family:monospace;background:#ede8f5;color:#3e256c;padding:5px 11px;border-radius:7px;font-size:13px;white-space:nowrap;min-width:140px;text-align:center;}
+  .mapping-arrow{color:#9ca3af;font-size:18px;flex-shrink:0;}
+  .mapping-select{flex:1;}
+  .stats-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px;}
+  .stat-box{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 18px;text-align:center;}
+  .stat-val{font-size:22px;font-weight:800;color:#3e256c;}
+  .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
+  .spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+  @@keyframes spin{to{transform:rotate(360deg)}}
+  .toggle-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .toggle-label{font-size:13px;color:#374151;}
+  .toggle-switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;}
+  .toggle-switch input{opacity:0;width:0;height:0;}
+  .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:24px;transition:.25s;}
+  .toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s;}
+  .toggle-switch input:checked+.toggle-slider{background:#6252a3;}
+  .toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px);}
 </style>
 
 <h1 class="page-title">Certificates</h1>
-<p class="page-sub">Generate and send personalised certificates to your event attendees.</p>
+<p class="page-sub">Generate personalised certificates for your event attendees.</p>
 
 <div id="alertMsg" class="alert"></div>
 
-<!-- Step 1: Event -->
+<!-- Step 1: Select Event -->
 <div class="card">
-  <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>1 · Select Event</div>
+  <div class="card-title">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    1 · Select Event
+  </div>
   <div class="form-group">
     <label class="form-label">Active Event</label>
     <select id="eventSelect" class="select-input" onchange="onEventChange()">
@@ -54,227 +70,455 @@
   </div>
 </div>
 
-<div id="setupSection" style="display:none;">
-
-  <!-- Saved banner (shown when config exists and not editing) -->
-  <div id="savedBanner" class="status-banner banner-saved" style="display:none;">
-    <span class="banner-text">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      Template settings saved
-    </span>
-    <div class="banner-actions">
-      <button class="btn btn-ghost" onclick="editSettings()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        Edit Settings
-      </button>
+<!-- Step 2: Upload files -->
+<div id="uploadSection" style="display:none;">
+  <div class="card">
+    <div class="card-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      2 · Upload Certificate Template (PPTX)
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">
+      Design your certificate in PowerPoint. Place <strong>&lt;&lt;tags&gt;&gt;</strong> wherever dynamic data should appear (e.g. <code style="background:#f3f4f6;padding:1px 5px;border-radius:4px;">&lt;&lt;Name&gt;&gt;</code>), then upload the <strong>.pptx</strong> file.
+    </p>
+    <div class="upload-box" onclick="document.getElementById('templateFile').click()">
+      <input type="file" id="templateFile" accept=".pptx" onchange="onFileChange('templateFile','templateFileLabel')" />
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <label class="upload-label" id="templateFileLabel">Click to select .pptx file</label>
     </div>
   </div>
 
-  <!-- Template settings editor (shown when no config, or editing) -->
-  <div id="editorCard" class="card">
-    <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2 · Template Settings</div>
-    <div class="form-group"><label class="form-label">Template Name *</label><input id="cTemplateName" class="form-input" placeholder="e.g. Participation Certificate" /></div>
-    <div class="form-group"><label class="form-label">Email Subject</label><input id="cEmailSubject" class="form-input" placeholder="e.g. Your Certificate of Participation" /></div>
-    <div class="form-group"><label class="form-label">Email Body</label><textarea id="cEmailBody" class="form-textarea" placeholder="Dear {Name}, please find your certificate attached…"></textarea></div>
+  <div class="card">
+    <div class="card-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      3 · Upload Recipients (CSV)
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">Upload a CSV file whose column headers match the tags in your template. Up to 2,000 rows per batch.</p>
+    <div class="upload-box" onclick="document.getElementById('recipientFile').click()">
+      <input type="file" id="recipientFile" accept=".csv" onchange="onFileChange('recipientFile','recipientFileLabel')" />
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <label class="upload-label" id="recipientFileLabel">Click to select .csv file</label>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;">
+    <button id="nextBtn" class="btn btn-primary" onclick="goToMapping()">
+      Next
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Step 3: Map tags → columns + Generate -->
+<div id="mappingSection" style="display:none;">
+  <div class="card">
+    <div class="card-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      4 · Map Template Tags to CSV Columns
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:16px;">Each tag detected in your PPTX is listed below. Select the CSV column whose value should replace it.</p>
+    <div id="mappingRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      5 · Generate Certificates
+    </div>
+    <div class="toggle-wrap">
+      <span class="toggle-label" style="font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.3px;">Output Format</span>
+      <span class="toggle-label">PPTX</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="convertToPdf" />
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="toggle-label">PDF</span>
+      <span id="formatNote" style="font-size:11px;color:#9ca3af;margin-left:4px;">Files will be zipped as .pptx</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Output File Name Pattern <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+      <input id="outputPattern" class="form-input" placeholder="e.g. <<Name>>_certificate  — leave blank to use default" />
+      <div style="font-size:11px;color:#9ca3af;margin-top:4px;">Use the same tags as your template. Each file will be named using the recipient's data.</div>
+    </div>
+    <div id="downloadSection" style="display:none;margin-bottom:16px;">
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="statCompleted">—</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-box"><div class="stat-val" id="statFailed">—</div><div class="stat-lbl">Failed</div></div>
+        <div class="stat-box"><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total</div></div>
+      </div>
+      <button class="btn btn-download" onclick="downloadZip()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download ZIP
+      </button>
+    </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="saveSettings()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Save Settings
+      <button class="btn btn-ghost" onclick="goBack()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
       </button>
-      <button id="cancelEditBtn" class="btn btn-ghost" onclick="cancelEdit()" style="display:none;">Cancel</button>
+      <button id="generateBtn" class="btn btn-green" onclick="generateCertificates()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Generate Certificates
+      </button>
     </div>
   </div>
-
-  <!-- Upload & Generate (only visible after certConfigId is set) -->
-  <div id="actionsSection" style="display:none;">
-
-    <!-- Upload base template -->
-    <div class="card">
-      <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>3 · Upload Certificate Template (PDF/Image)</div>
-      <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">Upload the certificate design file. Recipient names will be merged into it.</p>
-      <div class="upload-box" onclick="document.getElementById('templateFile').click()">
-        <input type="file" id="templateFile" accept=".pdf,.png,.jpg,.jpeg" />
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <label class="upload-label" id="templateFileLabel">Click to upload certificate template</label>
-      </div>
-      <button class="btn btn-primary" style="margin-top:12px;" onclick="uploadTemplate()">Upload Template</button>
-    </div>
-
-    <!-- Upload recipients -->
-    <div class="card">
-      <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>4 · Upload Recipients (CSV/Excel)</div>
-      <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">Upload a CSV with columns: Name, Email (required). Additional columns become merge fields.</p>
-      <div class="upload-box" onclick="document.getElementById('recipientFile').click()">
-        <input type="file" id="recipientFile" accept=".csv,.xlsx,.xls" />
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <label class="upload-label" id="recipientFileLabel">Click to upload recipient list</label>
-      </div>
-      <button class="btn btn-primary" style="margin-top:12px;" onclick="uploadRecipients()">Upload Recipients</button>
-    </div>
-
-    <!-- Generate -->
-    <div class="card">
-      <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>5 · Generate Certificates</div>
-      <p style="font-size:12px;color:#6b7280;margin-bottom:16px;">Generate and optionally email all certificates to recipients.</p>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;">
-          <input type="checkbox" id="sendEmails" style="width:15px;height:15px;accent-color:#3e256c;" />
-          Send emails to recipients
-        </label>
-        <button class="btn btn-green" onclick="generateBatch()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Generate Now
-        </button>
-      </div>
-    </div>
-
-  </div><!-- /actionsSection -->
-</div><!-- /setupSection -->
+</div>
 
 <script>
 Auth.guard('User');
-const token = Auth.getToken();
-const H  = { 'Authorization': `Bearer ${token}` };
-const HJ = { ...H, 'Content-Type': 'application/json' };
-const CERT_TOOL_TYPE = 2; // ToolType.CertificateGenerator
-let selectedEventToolId = null;
+const CERT_TOOL_TYPE = 2;
+const SS_KEY = 'cert_page_state';
+
+// Always read the latest token from storage so token rotations mid-session work
+function H()  { return { 'Authorization': `Bearer ${Auth.getToken()}` }; }
+function HJ() { return { ...H(), 'Content-Type': 'application/json' }; }
+
 let certConfigId = null;
-let isEditing = false;
+let batchId      = null;
+let _placeholders = [];
+let _columns      = [];
 
-function showAlert(msg, type='success') {
+// ── sessionStorage helpers ───────────────────────────────────────────────────
+
+function saveState() {
+  const eventId         = document.getElementById('eventSelect').value;
+  const step            = document.getElementById('mappingSection').style.display !== 'none' ? 'mapping'
+                        : document.getElementById('uploadSection').style.display  !== 'none' ? 'upload'
+                        : 'event';
+  const downloadVisible = document.getElementById('downloadSection').style.display !== 'none';
+  sessionStorage.setItem(SS_KEY, JSON.stringify({
+    certConfigId, batchId, eventId, step,
+    placeholders:  _placeholders,
+    columns:       _columns,
+    outputPattern: document.getElementById('outputPattern').value,
+    downloadVisible,
+    statCompleted:  document.getElementById('statCompleted').textContent,
+    statFailed:     document.getElementById('statFailed').textContent,
+    statTotal:      document.getElementById('statTotal').textContent,
+    outputFormat:   document.getElementById('convertToPdf').checked ? 'pdf' : 'pptx',
+    downloadLabel:  document.querySelector('#downloadSection .btn-download')?.innerHTML ?? ''
+  }));
+}
+
+function clearState() {
+  sessionStorage.removeItem(SS_KEY);
+}
+
+// ── Auth / fetch helpers ─────────────────────────────────────────────────────
+
+async function apiFetch(url, opts = {}) {
+  if (Auth.isExpired()) { Auth.logout(); return null; }
+  const res = await fetch(url, opts);
+  if (res.status === 401) { Auth.logout(); return null; }
+  return res;
+}
+
+// ── UI helpers ───────────────────────────────────────────────────────────────
+
+function showAlert(msg, type = 'success') {
   const el = document.getElementById('alertMsg');
-  el.textContent = msg; el.className = `alert alert-${type}`; el.style.display='block';
-  setTimeout(()=>el.style.display='none', 4000);
+  el.textContent = msg;
+  el.className = `alert alert-${type}`;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
 }
 
-function applyUiState() {
-  const hasCfg = !!certConfigId;
-  document.getElementById('savedBanner').style.display   = hasCfg && !isEditing ? 'flex' : 'none';
-  document.getElementById('editorCard').style.display    = !hasCfg || isEditing  ? 'block' : 'none';
-  document.getElementById('cancelEditBtn').style.display = hasCfg && isEditing   ? 'inline-flex' : 'none';
-  document.getElementById('actionsSection').style.display = hasCfg               ? 'block' : 'none';
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function editSettings() {
-  isEditing = true;
-  applyUiState();
+function onFileChange(inputId, labelId) {
+  const f = document.getElementById(inputId).files[0];
+  if (f) document.getElementById(labelId).textContent = f.name;
 }
 
-function cancelEdit() {
-  isEditing = false;
-  applyUiState();
-}
+// ── Event loading & selection ────────────────────────────────────────────────
 
 async function loadEvents() {
-  try {
-    const r = await fetch('/api/events', { headers: H });
-    if (!r.ok) return;
-    const data = await r.json();
-    const sel  = document.getElementById('eventSelect');
-    data.filter(e=>e.status===1).forEach(e => {
-      const o = document.createElement('option'); o.value=e.id; o.textContent=e.name; sel.appendChild(o);
-    });
-  } catch {}
+  const r = await apiFetch('/api/events', { headers: H() });
+  if (!r || !r.ok) return;
+  const data = await r.json();
+  const sel = document.getElementById('eventSelect');
+  data.filter(e => e.status === 1).forEach(e => {
+    const o = document.createElement('option');
+    o.value = e.id; o.textContent = e.name;
+    sel.appendChild(o);
+  });
 }
 
 async function onEventChange() {
   const eventId = document.getElementById('eventSelect').value;
-  selectedEventToolId = null;
   certConfigId = null;
-  isEditing = false;
-  document.getElementById('setupSection').style.display = eventId ? 'block' : 'none';
+  batchId      = null;
+  _placeholders = [];
+  _columns      = [];
+  clearState();
+  document.getElementById('uploadSection').style.display  = 'none';
+  document.getElementById('mappingSection').style.display = 'none';
   if (!eventId) return;
 
   try {
-    const r = await fetch(`/api/events/${eventId}/activate-tool/${CERT_TOOL_TYPE}`, {
-      method: 'POST', headers: HJ
+    const r = await apiFetch(`/api/events/${eventId}/activate-tool/${CERT_TOOL_TYPE}`, {
+      method: 'POST', headers: HJ()
     });
-    if (r.ok) {
-      selectedEventToolId = await r.json();
-      try {
-        const setup = await fetch(`/api/certificate-generator/setup/${selectedEventToolId}`, { headers: H });
-        if (setup.ok) {
-          const d = await setup.json();
-          certConfigId = d.id;
-          document.getElementById('cTemplateName').value = d.templateName || '';
-          document.getElementById('cEmailSubject').value = d.emailSubject || '';
-          document.getElementById('cEmailBody').value    = d.emailBody    || '';
-        }
-      } catch {}
-      applyUiState();
-    } else {
-      const e = await r.json().catch(()=>({}));
+    if (!r || !r.ok) {
+      const e = r ? await r.json().catch(() => ({})) : {};
       showAlert(e.detail || 'Could not activate tool.', 'error');
-      document.getElementById('setupSection').style.display = 'none';
+      return;
     }
+    const eventToolId = await r.json();
+
+    const setup = await apiFetch(`/api/certificate-generator/setup/${eventToolId}`, { headers: H() });
+    if (!setup || !setup.ok) {
+      const e = setup ? await setup.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'Could not load certificate setup.', 'error');
+      return;
+    }
+    const d = await setup.json();
+    certConfigId = d.id;
+    document.getElementById('uploadSection').style.display = 'block';
+    saveState();
   } catch {
-    showAlert('Network error activating tool.', 'error');
+    showAlert('Network error.', 'error');
   }
 }
 
-async function saveSettings() {
-  if (!selectedEventToolId) { showAlert('Select an event first.','error'); return; }
-  const name = document.getElementById('cTemplateName').value.trim();
-  if (!name) { showAlert('Template name is required.','error'); return; }
+// ── Upload → mapping step ────────────────────────────────────────────────────
+
+async function goToMapping() {
+  const pptxFile = document.getElementById('templateFile').files[0];
+  if (!pptxFile) { showAlert('Select a PPTX template file first.', 'error'); return; }
+
+  const csvFile = document.getElementById('recipientFile').files[0];
+  if (!csvFile) { showAlert('Select a CSV recipient file first.', 'error'); return; }
+
+  const btn = document.getElementById('nextBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Uploading…';
+
   try {
-    const r = await fetch('/api/certificate-generator/setup', {
-      method: 'POST', headers: HJ,
-      body: JSON.stringify({
-        eventToolId:  selectedEventToolId,
-        templateName: name,
-        emailSubject: document.getElementById('cEmailSubject').value.trim() || null,
-        emailBody:    document.getElementById('cEmailBody').value.trim()    || null
-      })
+    const fd1 = new FormData();
+    fd1.append('template', pptxFile);
+    const r1 = await apiFetch(`/api/certificate-generator/${certConfigId}/base-template`, {
+      method: 'POST', headers: H(), body: fd1
     });
-    const txt = await r.text();
-    let d = {};
-    try { d = JSON.parse(txt); } catch {}
-    if (r.ok || r.status === 201) {
-      certConfigId = d.id;
-      isEditing = false;
-      showAlert('Settings saved!');
-      applyUiState();
-    } else {
-      showAlert(d.detail || d.title || `Error ${r.status}`, 'error');
+    if (!r1 || !r1.ok) {
+      const e = r1 ? await r1.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'Template upload failed.', 'error');
+      return;
     }
-  } catch { showAlert('Network error.','error'); }
+    const setupData = await r1.json();
+    const detectedPlaceholders = setupData.detectedPlaceholders || [];
+
+    const fd2 = new FormData();
+    fd2.append('dataset', csvFile);
+    const r2 = await apiFetch(`/api/certificate-generator/${certConfigId}/recipient-dataset`, {
+      method: 'POST', headers: H(), body: fd2
+    });
+    if (!r2 || !r2.ok) {
+      const e = r2 ? await r2.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'CSV upload failed.', 'error');
+      return;
+    }
+    const csvData = await r2.json();
+    const csvColumns = csvData.columns || [];
+
+    if (detectedPlaceholders.length === 0) {
+      showAlert('No <<tags>> found in the PPTX. Add <<Tag>> markers to your slide and re-upload.', 'error');
+      return;
+    }
+
+    _placeholders = detectedPlaceholders;
+    _columns      = csvColumns;
+    buildMappingUI(_placeholders, _columns);
+    document.getElementById('uploadSection').style.display  = 'none';
+    document.getElementById('mappingSection').style.display = 'block';
+    document.getElementById('downloadSection').style.display = 'none';
+    saveState();
+  } catch {
+    showAlert('Network error during upload.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
+  }
 }
 
-document.getElementById('templateFile').addEventListener('change', () => {
-  const f = document.getElementById('templateFile').files[0];
-  if (f) document.getElementById('templateFileLabel').textContent = f.name;
-});
-document.getElementById('recipientFile').addEventListener('change', () => {
-  const f = document.getElementById('recipientFile').files[0];
-  if (f) document.getElementById('recipientFileLabel').textContent = f.name;
-});
+function buildMappingUI(placeholders, columns, savedMappings = {}) {
+  const container = document.getElementById('mappingRows');
+  container.innerHTML = '';
+  const optionsHtml = columns.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
 
-async function uploadTemplate() {
-  if (!certConfigId) { showAlert('Save settings first.','error'); return; }
-  const file = document.getElementById('templateFile').files[0];
-  if (!file) { showAlert('Choose a template file.','error'); return; }
-  const fd = new FormData(); fd.append('file', file);
-  const r = await fetch(`/api/certificate-generator/${certConfigId}/base-template`,{method:'POST',headers:H,body:fd});
-  r.ok ? showAlert('Template uploaded!') : showAlert('Upload failed.','error');
-}
+  placeholders.forEach(key => {
+    const saved     = savedMappings[key];
+    const autoMatch = saved
+      || columns.find(c => c.toLowerCase() === key.toLowerCase())
+      || columns[0] || '';
 
-async function uploadRecipients() {
-  if (!certConfigId) { showAlert('Save settings first.','error'); return; }
-  const file = document.getElementById('recipientFile').files[0];
-  if (!file) { showAlert('Choose a recipient file.','error'); return; }
-  const fd = new FormData(); fd.append('file', file);
-  const r = await fetch(`/api/certificate-generator/${certConfigId}/recipient-dataset`,{method:'POST',headers:H,body:fd});
-  r.ok ? showAlert('Recipients uploaded!') : showAlert('Upload failed.','error');
-}
-
-async function generateBatch() {
-  if (!certConfigId) { showAlert('Complete setup first.','error'); return; }
-  const sendEmails = document.getElementById('sendEmails').checked;
-  const r = await fetch(`/api/certificate-generator/${certConfigId}/generate`,{
-    method:'POST', headers:HJ, body: JSON.stringify({ sendEmails })
+    const row = document.createElement('div');
+    row.className = 'mapping-row';
+    row.innerHTML = `
+      <span class="placeholder-tag">&lt;&lt;${esc(key)}&gt;&gt;</span>
+      <span class="mapping-arrow">→</span>
+      <select class="select-input mapping-select col-select" data-key="${esc(key)}">
+        ${optionsHtml}
+      </select>`;
+    container.appendChild(row);
+    row.querySelector('select').value = autoMatch;
   });
-  r.ok ? showAlert('Generation started! Check your email.') : showAlert('Generation failed.','error');
 }
 
-loadEvents();
+function goBack() {
+  document.getElementById('mappingSection').style.display = 'none';
+  document.getElementById('uploadSection').style.display  = 'block';
+  saveState();
+}
+
+// ── Format toggle ─────────────────────────────────────────────────────────────
+
+document.getElementById('convertToPdf').addEventListener('change', function () {
+  document.getElementById('formatNote').textContent =
+    this.checked ? 'Files will be zipped as .pdf (conversion may take longer)'
+                 : 'Files will be zipped as .pptx';
+});
+
+// ── Generate ─────────────────────────────────────────────────────────────────
+
+async function generateCertificates() {
+  const mappings = [];
+  document.querySelectorAll('.col-select').forEach(sel => {
+    const key = sel.dataset.key;
+    const col = sel.value;
+    if (key && col) mappings.push({ fieldKey: key, sourceColumn: col, fieldType: 'text', positionX: 0, positionY: 0 });
+  });
+  if (mappings.length === 0) { showAlert('No mappings configured.', 'error'); return; }
+
+  const pattern      = document.getElementById('outputPattern').value.trim() || null;
+  const outputFormat = document.getElementById('convertToPdf').checked ? 'pdf' : 'pptx';
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating…';
+  document.getElementById('downloadSection').style.display = 'none';
+
+  try {
+    const r1 = await apiFetch(`/api/certificate-generator/${certConfigId}/mappings`, {
+      method: 'PUT', headers: HJ(),
+      body: JSON.stringify({ mappings, outputFileNamePattern: pattern })
+    });
+    if (!r1 || !r1.ok) {
+      const e = r1 ? await r1.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'Failed to save mappings.', 'error');
+      return;
+    }
+
+    const r2 = await apiFetch(`/api/certificate-generator/${certConfigId}/generate-batch`, {
+      method: 'POST', headers: HJ(),
+      body: JSON.stringify({ outputFormat })
+    });
+    if (!r2 || !r2.ok) {
+      const e = r2 ? await r2.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'Failed to create batch.', 'error');
+      return;
+    }
+    const batchData = await r2.json();
+    batchId = batchData.id;
+    saveState();
+
+    const r3 = await apiFetch(`/api/certificate-generator/${certConfigId}/batches/${batchId}/process`, {
+      method: 'POST', headers: HJ()
+    });
+    if (!r3 || !r3.ok) {
+      const e = r3 ? await r3.json().catch(() => ({})) : {};
+      showAlert(e.detail || 'Certificate rendering failed.', 'error');
+      return;
+    }
+    const result = await r3.json();
+
+    document.getElementById('statCompleted').textContent = result.completedRecipients ?? result.totalRecipients;
+    document.getElementById('statFailed').textContent    = result.failedRecipients ?? 0;
+    document.getElementById('statTotal').textContent     = result.totalRecipients;
+    document.getElementById('downloadSection').style.display = 'block';
+    document.querySelector('#downloadSection .btn-download').innerHTML =
+      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+       Download ZIP (${outputFormat.toUpperCase()})`;
+    saveState();
+    showAlert(`Done! ${result.completedRecipients ?? result.totalRecipients} certificates generated as ${outputFormat.toUpperCase()}.`);
+  } catch {
+    showAlert('Network error during generation.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Generate Certificates';
+  }
+}
+
+// ── Download ─────────────────────────────────────────────────────────────────
+
+async function downloadZip() {
+  try {
+    const r = await apiFetch(`/api/certificate-generator/${certConfigId}/batches/${batchId}/download`, { headers: H() });
+    if (!r || !r.ok) { showAlert('Download failed.', 'error'); return; }
+    const blob = await r.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'certificates.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    showAlert('Network error during download.', 'error');
+  }
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+
+async function boot() {
+  await loadEvents();
+
+  const saved = sessionStorage.getItem(SS_KEY);
+  if (!saved) return;
+
+  let s;
+  try { s = JSON.parse(saved); } catch { return; }
+
+  if (!s.certConfigId || !s.eventId) return;
+
+  // Restore saved values
+  certConfigId  = s.certConfigId;
+  batchId       = s.batchId || null;
+  _placeholders = s.placeholders || [];
+  _columns      = s.columns      || [];
+
+  // Select the event in the dropdown
+  const sel = document.getElementById('eventSelect');
+  if ([...sel.options].some(o => o.value === s.eventId)) {
+    sel.value = s.eventId;
+  }
+
+  if (s.step === 'mapping' && _placeholders.length > 0 && _columns.length > 0) {
+    buildMappingUI(_placeholders, _columns);
+    if (s.outputPattern) document.getElementById('outputPattern').value = s.outputPattern;
+    document.getElementById('mappingSection').style.display = 'block';
+
+    if (s.outputFormat) {
+      document.getElementById('convertToPdf').checked = s.outputFormat === 'pdf';
+      document.getElementById('formatNote').textContent = s.outputFormat === 'pdf'
+        ? 'Files will be zipped as .pdf (conversion may take longer)'
+        : 'Files will be zipped as .pptx';
+    }
+
+    if (s.downloadVisible && batchId) {
+      document.getElementById('statCompleted').textContent = s.statCompleted || '—';
+      document.getElementById('statFailed').textContent    = s.statFailed    || '—';
+      document.getElementById('statTotal').textContent     = s.statTotal     || '—';
+      if (s.downloadLabel) {
+        document.querySelector('#downloadSection .btn-download').innerHTML = s.downloadLabel;
+      }
+      document.getElementById('downloadSection').style.display = 'block';
+    }
+  } else if (s.step === 'upload' || s.step === 'mapping') {
+    document.getElementById('uploadSection').style.display = 'block';
+  }
+}
+
+boot();
 </script>
